@@ -1,0 +1,42 @@
+.cart-page {
+  min-height: calc(100vh - 65px);
+  background: #fafafa;
+  padding: 40px 0;
+}
+
+.cart-page h1 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 32px;
+}
+
+.cart-empty {
+  background: white;
+  border-radius: 12px;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.cart-empty p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.button-primary {
+  display: inline-block;
+  background: #1a1a1a;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.button-primary:hover {
+  background: #333;
+}
