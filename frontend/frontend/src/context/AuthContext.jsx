@@ -57,10 +57,37 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateProfile = async (userData) => {
+    try {
+      const response = await authAPI.updateProfile(userData);
+      setUser(response.data);
+      return { success: true };
+    } catch (error) {
+      return { 
+        success: false, 
+        error: error.response?.data?.message || 'Ошибка обновления профиля' 
+      };
+    }
+  };
+
+  const changePassword = async (passwordData) => {
+    try {
+      await authAPI.changePassword(passwordData);
+      return { success: true };
+    } catch (error) {
+      return { 
+        success: false, 
+        error: error.response?.data?.message || 'Ошибка смены пароля' 
+      };
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
-    authAPI.logout();
+    if (authAPI.logout) {
+      authAPI.logout();
+    }
   };
 
   const value = {
@@ -68,6 +95,8 @@ export const AuthProvider = ({ children }) => {
     loading,
     login,
     register,
+    updateProfile,
+    changePassword,
     logout,
     isAuthenticated: !!user,
   };

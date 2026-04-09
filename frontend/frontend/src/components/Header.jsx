@@ -1,12 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { cartAPI } from '../services/api';
 import './Header.css';
 
 const Header = () => {
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchCartCount();
+    }
+  }, [isAuthenticated]);
+
+  const fetchCartCount = async () => {
+    try {
+      const response = await cartAPI.getCart();
+      const items = response.data?.items || [];
+      const count = items.reduce((sum, item) => sum + item.quantity, 0);
+      setCartCount(count);
+    } catch (error) {
+      console.error('Ошибка загрузки корзины:', error);
+    }
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -41,8 +60,9 @@ const Header = () => {
               <Link to="/profile" className="header-link">
                 {user?.username}
               </Link>
-              <Link to="/cart" className="header-link">
+              <Link to="/cart" className="header-link cart-link">
                 Корзина
+                {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
               </Link>
               <button onClick={logout} className="header-link logout-btn">
                 Выйти

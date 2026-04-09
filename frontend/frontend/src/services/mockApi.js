@@ -1,4 +1,24 @@
-let mockUsers = [
+const STORAGE_KEYS = {
+  USERS: 'mock_users',
+  PRODUCTS: 'mock_products',
+  REVIEWS: 'mock_reviews',
+  CURRENT_USER: 'mock_current_user',
+  CART: 'mock_cart'
+};
+
+const loadFromStorage = (key, defaultValue) => {
+  const stored = localStorage.getItem(key);
+  if (stored) {
+    return JSON.parse(stored);
+  }
+  return defaultValue;
+};
+
+const saveToStorage = (key, data) => {
+  localStorage.setItem(key, JSON.stringify(data));
+};
+
+let mockUsers = loadFromStorage(STORAGE_KEYS.USERS, [
   {
     id: 1,
     email: 'user@example.com',
@@ -15,9 +35,9 @@ let mockUsers = [
     full_name: 'Мария Петрова',
     created_at: '2026-04-07T13:00:00Z'
   }
-];
+]);
 
-let mockProducts = [
+let mockProducts = loadFromStorage(STORAGE_KEYS.PRODUCTS, [
   {
     id: 1,
     owner_id: 1,
@@ -106,9 +126,52 @@ let mockProducts = [
     created_at: '2026-04-07T15:30:00Z',
     updated_at: '2026-04-07T15:30:00Z'
   }
-];
+]);
 
-let currentUser = null;
+let mockReviews = loadFromStorage(STORAGE_KEYS.REVIEWS, [
+  {
+    id: 1,
+    product_id: 1,
+    user_id: 2,
+    username: 'maria88',
+    rating: 5,
+    comment: 'Отличный ноутбук, очень довольна покупкой!',
+    created_at: '2026-04-08T10:00:00Z',
+    updated_at: '2026-04-08T10:00:00Z'
+  },
+  {
+    id: 2,
+    product_id: 1,
+    user_id: 1,
+    username: 'ivan123',
+    rating: 4,
+    comment: 'Хороший ноут, но немного шумный под нагрузкой',
+    created_at: '2026-04-08T11:00:00Z',
+    updated_at: '2026-04-08T11:00:00Z'
+  },
+  {
+    id: 3,
+    product_id: 3,
+    user_id: 1,
+    username: 'ivan123',
+    rating: 5,
+    comment: 'Лучшие наушники за эти деньги',
+    created_at: '2026-04-08T12:00:00Z',
+    updated_at: '2026-04-08T12:00:00Z'
+  }
+]);
+
+let currentUser = loadFromStorage(STORAGE_KEYS.CURRENT_USER, null);
+
+let cart = loadFromStorage(STORAGE_KEYS.CART, {});
+
+const saveAllData = () => {
+  saveToStorage(STORAGE_KEYS.USERS, mockUsers);
+  saveToStorage(STORAGE_KEYS.PRODUCTS, mockProducts);
+  saveToStorage(STORAGE_KEYS.REVIEWS, mockReviews);
+  saveToStorage(STORAGE_KEYS.CURRENT_USER, currentUser);
+  saveToStorage(STORAGE_KEYS.CART, cart);
+};
 
 const generateToken = (user) => {
   return btoa(`${user.id}:${Date.now()}`);
@@ -134,6 +197,7 @@ export const mockAuthAPI = {
         };
         
         mockUsers.push(newUser);
+        saveAllData();
         
         const { password, ...userWithoutPassword } = newUser;
         resolve({ data: userWithoutPassword });
@@ -151,7 +215,8 @@ export const mockAuthAPI = {
         }
         
         const token = generateToken(user);
-        currentUser = user;
+        currentUser = { ...user };
+        saveAllData();
         
         const { password, ...userWithoutPassword } = user;
         resolve({ data: { token, user: userWithoutPassword } });
@@ -177,7 +242,85 @@ export const mockAuthAPI = {
   logout: () => {
     return new Promise((resolve) => {
       currentUser = null;
+      saveAllData();
       resolve({ data: { message: 'Выход выполнен' } });
+    });
+  },
+
+  updateProfile: (data) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (!currentUser) {
+          reject({ response: { status: 401, data: { message: 'Необходимо войти в систему' } } });
+          return;
+        }
+
+        const userIndex = mockUsers.findIndex(u => u.id === currentUser.id);
+        if (userIndex === -1) {
+          reject({ response: { data: { message: 'Пользователь не найден' } } });
+          return;
+        }
+
+        const emailExists = mockUsers.some(u => u.email === data.email && u.id !== currentUser.id);
+        if (emailExists) {
+          reject({ response: { data: { message: 'Пользователь с таким email уже существует' } } });
+          return;
+        }
+
+        const usernameExists = mockUsers.some(u => u.username === data.username && u.id !== currentUser.id);
+        if (usernameExists) {
+          reject({ response: { data: { message: 'Пользователь с таким именем уже существует' } } });
+          return;
+        }
+
+        mockUsers[userIndex] = {
+          ...mockUsers[userIndex],
+          email: data.email,
+          username: data.username,
+          full_name: data.full_name || ''
+        };
+
+        currentUser = { ...mockUsers[userIndex] };
+        
+        const productOwnerIds = mockProducts.filter(p => p.owner_id === currentUser.id);
+        productOwnerIds.forEach(p => {
+          p.owner_username = currentUser.username;
+        });
+        
+        saveAllData();
+
+        const { password, ...userWithoutPassword } = currentUser;
+        resolve({ data: userWithoutPassword });
+      }, 500);
+    });
+  },
+
+  changePassword: (data) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (!currentUser) {
+          reject({ response: { status: 401, data: { message: 'Необходимо войти в систему' } } });
+          return;
+        }
+
+        if (currentUser.password !== data.currentPassword) {
+          reject({ response: { data: { message: 'Неверный текущий пароль' } } });
+          return;
+        }
+
+        if (data.newPassword.length < 6) {
+          reject({ response: { data: { message: 'Новый пароль должен содержать минимум 6 символов' } } });
+          return;
+        }
+
+        const userIndex = mockUsers.findIndex(u => u.id === currentUser.id);
+        mockUsers[userIndex].password = data.newPassword;
+        currentUser.password = data.newPassword;
+        
+        saveAllData();
+
+        resolve({ data: { message: 'Пароль успешно изменен' } });
+      }, 500);
     });
   }
 };
@@ -255,6 +398,11 @@ export const mockProductsAPI = {
           return;
         }
         
+        if (!data.name || data.name.trim() === '') {
+          reject({ response: { data: { message: 'Название товара обязательно' } } });
+          return;
+        }
+        
         if (data.price <= 0) {
           reject({ response: { data: { message: 'Цена должна быть больше 0' } } });
           return;
@@ -278,6 +426,7 @@ export const mockProductsAPI = {
         };
         
         mockProducts.push(newProduct);
+        saveAllData();
         resolve({ data: newProduct });
       }, 500);
     });
@@ -298,12 +447,28 @@ export const mockProductsAPI = {
           return;
         }
         
+        if (data.name && data.name.trim() === '') {
+          reject({ response: { data: { message: 'Название товара обязательно' } } });
+          return;
+        }
+        
+        if (data.price && data.price <= 0) {
+          reject({ response: { data: { message: 'Цена должна быть больше 0' } } });
+          return;
+        }
+        
+        if (data.quantity && data.quantity < 0) {
+          reject({ response: { data: { message: 'Количество не может быть отрицательным' } } });
+          return;
+        }
+        
         mockProducts[index] = {
           ...product,
           ...data,
           updated_at: new Date().toISOString()
         };
         
+        saveAllData();
         resolve({ data: mockProducts[index] });
       }, 500);
     });
@@ -325,7 +490,209 @@ export const mockProductsAPI = {
         }
         
         mockProducts.splice(index, 1);
+        saveAllData();
         resolve({ data: { message: 'Товар удален' } });
+      }, 500);
+    });
+  },
+
+  getReviews: (productId) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const productReviews = mockReviews.filter(r => r.product_id === Number(productId));
+        resolve({ data: productReviews });
+      }, 200);
+    });
+  },
+
+  createReview: (productId, data) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (!currentUser) {
+          reject({ response: { status: 401, data: { message: 'Необходимо войти в систему' } } });
+          return;
+        }
+
+        const product = mockProducts.find(p => p.id === Number(productId));
+        if (!product) {
+          reject({ response: { status: 404, data: { message: 'Товар не найден' } } });
+          return;
+        }
+
+        if (product.owner_id === currentUser.id) {
+          reject({ response: { data: { message: 'Вы не можете оставить отзыв на свой товар' } } });
+          return;
+        }
+
+        const newReview = {
+          id: mockReviews.length + 1,
+          product_id: Number(productId),
+          user_id: currentUser.id,
+          username: currentUser.username,
+          rating: data.rating,
+          comment: data.comment,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+
+        mockReviews.push(newReview);
+        saveAllData();
+        resolve({ data: newReview });
+      }, 500);
+    });
+  },
+
+  getCart: () => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (!currentUser) {
+          resolve({ data: { items: [], total_amount: 0 } });
+          return;
+        }
+        
+        if (!cart[currentUser.id]) {
+          cart[currentUser.id] = { items: [], total_amount: 0 };
+          saveAllData();
+        }
+        
+        const userCart = cart[currentUser.id];
+        resolve({ data: userCart });
+      }, 200);
+    });
+  },
+
+  addToCart: (productId, quantity) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (!currentUser) {
+          reject({ response: { status: 401, data: { message: 'Необходимо войти в систему' } } });
+          return;
+        }
+
+        const product = mockProducts.find(p => p.id === Number(productId));
+        if (!product) {
+          reject({ response: { status: 404, data: { message: 'Товар не найден' } } });
+          return;
+        }
+
+        if (product.owner_id === currentUser.id) {
+          reject({ response: { data: { message: 'Нельзя купить свой собственный товар' } } });
+          return;
+        }
+
+        if (product.quantity < quantity) {
+          reject({ response: { data: { message: 'Недостаточно товара на складе' } } });
+          return;
+        }
+
+        if (!cart[currentUser.id]) {
+          cart[currentUser.id] = { items: [], total_amount: 0 };
+        }
+
+        const existingItem = cart[currentUser.id].items.find(item => item.product_id === Number(productId));
+        
+        if (existingItem) {
+          existingItem.quantity += quantity;
+        } else {
+          cart[currentUser.id].items.push({
+            id: Date.now(),
+            product_id: product.id,
+            product_name: product.name,
+            price: product.price,
+            quantity: quantity,
+            added_at: new Date().toISOString()
+          });
+        }
+
+        cart[currentUser.id].total_amount = cart[currentUser.id].items.reduce(
+          (sum, item) => sum + (item.price * item.quantity), 0
+        );
+
+        saveAllData();
+        resolve({ data: { message: 'Товар добавлен в корзину' } });
+      }, 500);
+    });
+  },
+
+  updateCartItem: (itemId, quantity) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (!currentUser) {
+          reject({ response: { status: 401 } });
+          return;
+        }
+
+        if (!cart[currentUser.id]) {
+          reject({ response: { data: { message: 'Корзина пуста' } } });
+          return;
+        }
+
+        const itemIndex = cart[currentUser.id].items.findIndex(item => item.id === Number(itemId));
+        if (itemIndex === -1) {
+          reject({ response: { data: { message: 'Товар не найден в корзине' } } });
+          return;
+        }
+
+        const product = mockProducts.find(p => p.id === cart[currentUser.id].items[itemIndex].product_id);
+        if (product && quantity > product.quantity) {
+          reject({ response: { data: { message: 'Недостаточно товара на складе' } } });
+          return;
+        }
+
+        if (quantity <= 0) {
+          cart[currentUser.id].items.splice(itemIndex, 1);
+        } else {
+          cart[currentUser.id].items[itemIndex].quantity = quantity;
+        }
+
+        cart[currentUser.id].total_amount = cart[currentUser.id].items.reduce(
+          (sum, item) => sum + (item.price * item.quantity), 0
+        );
+
+        saveAllData();
+        resolve({ data: { message: 'Корзина обновлена' } });
+      }, 500);
+    });
+  },
+
+  removeFromCart: (itemId) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (!currentUser) {
+          reject({ response: { status: 401 } });
+          return;
+        }
+
+        if (!cart[currentUser.id]) {
+          reject({ response: { data: { message: 'Корзина пуста' } } });
+          return;
+        }
+
+        const itemIndex = cart[currentUser.id].items.findIndex(item => item.id === Number(itemId));
+        if (itemIndex === -1) {
+          reject({ response: { data: { message: 'Товар не найден в корзине' } } });
+          return;
+        }
+
+        cart[currentUser.id].items.splice(itemIndex, 1);
+        cart[currentUser.id].total_amount = cart[currentUser.id].items.reduce(
+          (sum, item) => sum + (item.price * item.quantity), 0
+        );
+
+        saveAllData();
+        resolve({ data: { message: 'Товар удален из корзины' } });
+      }, 500);
+    });
+  },
+
+  clearCart: () => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (currentUser) {
+          cart[currentUser.id] = { items: [], total_amount: 0 };
+          saveAllData();
+        }
+        resolve({ data: { message: 'Корзина очищена' } });
       }, 500);
     });
   }

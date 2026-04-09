@@ -2,14 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { productsAPI } from '../services/api';
 import ProductCard from '../components/ProductCard';
+import EditProfileModal from '../components/EditProfileModal';
+import ChangePasswordModal from '../components/ChangePasswordModal';
+import AddProductModal from '../components/AddProductModal';
 import './Profile.css';
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, updateProfile, changePassword } = useAuth();
   const [userProducts, setUserProducts] = useState([]);
   const [userOrders, setUserOrders] = useState([]);
   const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(false);
+  const [showEditProfile, setShowEditProfile] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [showAddProduct, setShowAddProduct] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (activeTab === 'products') {
@@ -41,6 +48,45 @@ const Profile = () => {
     } catch (error) {
       console.error('Ошибка загрузки заказов:', error);
       setLoading(false);
+    }
+  };
+
+  const handleUpdateProfile = async (formData) => {
+    setSaving(true);
+    const result = await updateProfile(formData);
+    setSaving(false);
+    if (result.success) {
+      setShowEditProfile(false);
+      alert('Профиль успешно обновлен');
+    }
+    return result;
+  };
+
+  const handleChangePassword = async (passwordData) => {
+    setSaving(true);
+    const result = await changePassword(passwordData);
+    setSaving(false);
+    if (result.success) {
+      setShowChangePassword(false);
+      alert('Пароль успешно изменен');
+    }
+    return result;
+  };
+
+  const handleAddProduct = async (productData) => {
+    setSaving(true);
+    try {
+      const response = await productsAPI.create(productData);
+      setUserProducts(prev => [response.data, ...prev]);
+      setShowAddProduct(false);
+      alert('Товар успешно добавлен');
+      return { success: true };
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || 'Ошибка при добавлении товара';
+      alert(errorMessage);
+      return { success: false, error: errorMessage };
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -111,8 +157,18 @@ const Profile = () => {
 
               <div className="action-card">
                 <h3>Действия</h3>
-                <button className="action-button">Редактировать профиль</button>
-                <button className="action-button secondary">Изменить пароль</button>
+                <button 
+                  onClick={() => setShowEditProfile(true)} 
+                  className="action-button"
+                >
+                  Редактировать профиль
+                </button>
+                <button 
+                  onClick={() => setShowChangePassword(true)} 
+                  className="action-button secondary"
+                >
+                  Изменить пароль
+                </button>
               </div>
             </div>
           )}
@@ -121,14 +177,24 @@ const Profile = () => {
             <div className="products-section">
               <div className="section-header">
                 <h3>Мои товары</h3>
-                <button className="add-product-btn">+ Добавить товар</button>
+                <button 
+                  onClick={() => setShowAddProduct(true)} 
+                  className="add-product-btn"
+                >
+                  + Добавить товар
+                </button>
               </div>
               {loading ? (
                 <div className="loading">Загрузка...</div>
               ) : userProducts.length === 0 ? (
                 <div className="empty-state">
                   <p>У вас пока нет товаров</p>
-                  <button className="button-primary">Добавить первый товар</button>
+                  <button 
+                    onClick={() => setShowAddProduct(true)} 
+                    className="button-primary"
+                  >
+                    Добавить первый товар
+                  </button>
                 </div>
               ) : (
                 <div className="products-grid">
@@ -158,6 +224,31 @@ const Profile = () => {
           )}
         </div>
       </div>
+
+      {showEditProfile && (
+        <EditProfileModal
+          user={user}
+          onClose={() => setShowEditProfile(false)}
+          onSave={handleUpdateProfile}
+          loading={saving}
+        />
+      )}
+
+      {showChangePassword && (
+        <ChangePasswordModal
+          onClose={() => setShowChangePassword(false)}
+          onChangePassword={handleChangePassword}
+          loading={saving}
+        />
+      )}
+
+      {showAddProduct && (
+        <AddProductModal
+          onClose={() => setShowAddProduct(false)}
+          onSave={handleAddProduct}
+          loading={saving}
+        />
+      )}
     </div>
   );
 };

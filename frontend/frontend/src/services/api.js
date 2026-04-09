@@ -20,15 +20,30 @@ api.interceptors.request.use((config) => {
 
 let authAPI;
 let productsAPI;
+let reviewsAPI;
+let cartAPI;
 
 if (USE_MOCK) {
   authAPI = mockAuthAPI;
   productsAPI = mockProductsAPI;
+  reviewsAPI = {
+    getByProduct: (productId) => mockProductsAPI.getReviews(productId),
+    create: (productId, data) => mockProductsAPI.createReview(productId, data),
+  };
+  cartAPI = {
+    getCart: () => mockProductsAPI.getCart(),
+    addToCart: (productId, quantity) => mockProductsAPI.addToCart(productId, quantity),
+    updateCartItem: (itemId, quantity) => mockProductsAPI.updateCartItem(itemId, quantity),
+    removeFromCart: (itemId) => mockProductsAPI.removeFromCart(itemId),
+    clearCart: () => mockProductsAPI.clearCart(),
+  };
 } else {
   authAPI = {
     register: (data) => api.post('/auth/register', data),
     login: (data) => api.post('/auth/login', data),
     getMe: () => api.get('/users/me'),
+    updateProfile: (data) => api.put('/users/me', data),
+    changePassword: (data) => api.post('/users/me/change-password', data),
   };
   
   productsAPI = {
@@ -48,9 +63,22 @@ if (USE_MOCK) {
     update: (id, data) => api.put(`/products/${id}`, data),
     delete: (id) => api.delete(`/products/${id}`),
   };
+  
+  reviewsAPI = {
+    getByProduct: (productId) => api.get(`/products/${productId}/reviews`),
+    create: (productId, data) => api.post(`/products/${productId}/reviews`, data),
+  };
+  
+  cartAPI = {
+    getCart: () => api.get('/cart'),
+    addToCart: (productId, quantity) => api.post('/cart/items', { product_id: productId, quantity }),
+    updateCartItem: (itemId, quantity) => api.put(`/cart/items/${itemId}`, { quantity }),
+    removeFromCart: (itemId) => api.delete(`/cart/items/${itemId}`),
+    clearCart: () => api.delete('/cart'),
+  };
 }
 
-export { authAPI, productsAPI };
+export { authAPI, productsAPI, reviewsAPI, cartAPI };
 
 export const usersAPI = {
   getAll: () => api.get('/users'),
