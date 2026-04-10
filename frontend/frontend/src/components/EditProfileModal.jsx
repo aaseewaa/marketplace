@@ -1,57 +1,36 @@
 import React, { useState } from 'react';
-import ImageUpload from './ImageUpload';
-import './EditProductModal.css';
+import './EditProfileModal.css';
 
-const EditProductModal = ({ product, onClose, onSave, loading }) => {
+const EditProfileModal = ({ user, onClose, onSave, loading }) => {
   const [formData, setFormData] = useState({
-    name: product.name,
-    description: product.description || '',
-    price: product.price,
-    quantity: product.quantity,
-    image: product.image || ''
+    full_name: user?.full_name || '',
+    username: user?.username || '',
+    email: user?.email || '',
   });
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
-  };
-
-  const handleImageSelect = (imageUrl) => {
-    setFormData(prev => ({ ...prev, image: imageUrl }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
-    if (!formData.name.trim()) {
-      setError('Название товара обязательно');
+    if (!formData.username.trim()) {
+      setError('Имя пользователя не может быть пустым');
       return;
     }
 
-    const price = Number(formData.price);
-    if (isNaN(price) || price <= 0) {
-      setError('Цена должна быть больше 0');
+    if (!formData.email.trim()) {
+      setError('Email не может быть пустым');
       return;
     }
 
-    const quantity = Number(formData.quantity);
-    if (isNaN(quantity) || quantity < 0) {
-      setError('Количество не может быть отрицательным');
-      return;
-    }
-
-    const result = await onSave({
-      name: formData.name.trim(),
-      description: formData.description.trim(),
-      price: price,
-      quantity: quantity,
-      image: formData.image || null
-    });
-
+    const result = await onSave(formData);
     if (result && !result.success) {
       setError(result.error);
     }
@@ -61,7 +40,7 @@ const EditProductModal = ({ product, onClose, onSave, loading }) => {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h3>Редактировать товар</h3>
+          <h3>Редактировать профиль</h3>
           <button onClick={onClose} className="modal-close">×</button>
         </div>
         
@@ -69,16 +48,23 @@ const EditProductModal = ({ product, onClose, onSave, loading }) => {
           {error && <div className="error-message">{error}</div>}
           
           <div className="form-group">
-            <label>Фото товара (URL)</label>
-            <ImageUpload onImageSelect={handleImageSelect} currentImage={formData.image} />
-          </div>
-
-          <div className="form-group">
-            <label>Название товара *</label>
+            <label>Полное имя</label>
             <input
               type="text"
-              name="name"
-              value={formData.name}
+              name="full_name"
+              value={formData.full_name}
+              onChange={handleChange}
+              className="filter-input"
+              placeholder="Иван Иванов"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Имя пользователя</label>
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
               onChange={handleChange}
               required
               className="filter-input"
@@ -86,40 +72,13 @@ const EditProductModal = ({ product, onClose, onSave, loading }) => {
           </div>
 
           <div className="form-group">
-            <label>Описание</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows="4"
-              className="filter-input"
-            ></textarea>
-          </div>
-
-          <div className="form-group">
-            <label>Цена *</label>
+            <label>Email</label>
             <input
-              type="number"
-              name="price"
-              value={formData.price}
+              type="email"
+              name="email"
+              value={formData.email}
               onChange={handleChange}
               required
-              min="1"
-              step="1"
-              className="filter-input"
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Количество *</label>
-            <input
-              type="number"
-              name="quantity"
-              value={formData.quantity}
-              onChange={handleChange}
-              required
-              min="0"
-              step="1"
               className="filter-input"
             />
           </div>
@@ -138,4 +97,4 @@ const EditProductModal = ({ product, onClose, onSave, loading }) => {
   );
 };
 
-export default EditProductModal;
+export default EditProfileModal;
