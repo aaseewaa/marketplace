@@ -10,7 +10,19 @@ const ProductCard = ({ product }) => {
   return (
     <Link to={`/product/${product.id}`} className="product-card">
       <div className="product-image">
-        <div className="image-placeholder"></div>
+        {product.image ? (
+          <img 
+            src={product.image} 
+            alt={product.name} 
+            className="product-img"
+            onError={(e) => {
+              e.target.style.display = 'none';
+              e.target.parentElement.innerHTML = '<div class="image-placeholder"></div>';
+            }}
+          />
+        ) : (
+          <div className="image-placeholder"></div>
+        )}
         {product.quantity === 0 && (
           <div className="out-of-stock-badge">Нет в наличии</div>
         )}

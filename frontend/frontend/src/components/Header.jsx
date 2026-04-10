@@ -60,6 +60,9 @@ const Header = () => {
               <Link to="/profile" className="header-link">
                 {user?.username}
               </Link>
+              <Link to="/orders" className="header-link">
+                Заказы
+              </Link>
               <Link to="/cart" className="header-link cart-link">
                 Корзина
                 {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}

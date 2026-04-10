@@ -9,6 +9,9 @@ import Profile from './pages/Profile';
 import Home from './pages/Home';
 import Cart from './pages/Cart';
 import ProductPage from './pages/ProductPage';
+import Checkout from './pages/Checkout';
+import Orders from './pages/Orders';
+import OrderDetails from './pages/OrderDetails';
 
 function App() {
   return (
@@ -28,6 +31,21 @@ function App() {
           <Route path="/cart" element={
             <PrivateRoute>
               <Cart />
+            </PrivateRoute>
+          } />
+          <Route path="/checkout" element={
+            <PrivateRoute>
+              <Checkout />
+            </PrivateRoute>
+          } />
+          <Route path="/orders" element={
+            <PrivateRoute>
+              <Orders />
+            </PrivateRoute>
+          } />
+          <Route path="/orders/:id" element={
+            <PrivateRoute>
+              <OrderDetails />
             </PrivateRoute>
           } />
         </Routes>

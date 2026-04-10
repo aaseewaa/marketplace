@@ -200,9 +200,9 @@ const Cart = () => {
               <span>Итого к оплате</span>
               <span>{formatPrice(totalAmount)} ₽</span>
             </div>
-            <button className="checkout-btn button-primary">
+            <Link to="/checkout" className="checkout-btn button-primary">
               Оформить заказ
-            </button>
+            </Link>
           </div>
         </div>
       </div>

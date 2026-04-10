@@ -167,7 +167,19 @@ const ProductPage = () => {
         <div className="product-layout">
           <div className="product-gallery">
             <div className="product-main-image">
-              <div className="image-placeholder-large"></div>
+              {product.image ? (
+                <img 
+                  src={product.image} 
+                  alt={product.name} 
+                  className="product-main-img"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.parentElement.innerHTML = '<div class="image-placeholder-large"></div>';
+                  }}
+                />
+              ) : (
+                <div className="image-placeholder-large"></div>
+              )}
             </div>
           </div>
 

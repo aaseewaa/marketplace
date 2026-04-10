@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { productsAPI } from '../services/api';
 import ProductCard from '../components/ProductCard';
@@ -41,12 +42,16 @@ const Profile = () => {
   const fetchUserOrders = async () => {
     setLoading(true);
     try {
-      setTimeout(() => {
+      if (typeof productsAPI.getMyOrders === 'function') {
+        const response = await productsAPI.getMyOrders();
+        setUserOrders(response.data || []);
+      } else {
         setUserOrders([]);
-        setLoading(false);
-      }, 500);
+      }
     } catch (error) {
       console.error('Ошибка загрузки заказов:', error);
+      setUserOrders([]);
+    } finally {
       setLoading(false);
     }
   };
@@ -88,6 +93,36 @@ const Profile = () => {
     } finally {
       setSaving(false);
     }
+  };
+
+  const getStatusText = (status) => {
+    const statusMap = {
+      created: 'Создан',
+      completed: 'Завершён',
+      cancelled: 'Отменён'
+    };
+    return statusMap[status] || status;
+  };
+
+  const getStatusClass = (status) => {
+    const classMap = {
+      created: 'status-created',
+      completed: 'status-completed',
+      cancelled: 'status-cancelled'
+    };
+    return classMap[status] || '';
+  };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('ru-RU').format(price);
+  };
+
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString('ru-RU', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
   };
 
   if (!user) return null;
@@ -208,16 +243,53 @@ const Profile = () => {
 
           {activeTab === 'orders' && (
             <div className="orders-section">
-              <h3>История заказов</h3>
+              <h3>Мои заказы</h3>
               {loading ? (
                 <div className="loading">Загрузка...</div>
               ) : userOrders.length === 0 ? (
                 <div className="empty-state">
                   <p>У вас пока нет заказов</p>
-                  <a href="/" className="button-primary">Перейти к покупкам</a>
+                  <Link to="/" className="button-primary">Перейти к покупкам</Link>
                 </div>
               ) : (
-                <div className="orders-list">
+                <div className="profile-orders-list">
+                  {userOrders.map(order => (
+                    <div key={order.id} className="profile-order-card">
+                      <div className="profile-order-header">
+                        <div className="profile-order-info">
+                          <span className="profile-order-number">Заказ №{order.id}</span>
+                          <span className="profile-order-date">{formatDate(order.created_at)}</span>
+                        </div>
+                        <div className={`profile-order-status ${getStatusClass(order.status)}`}>
+                          {getStatusText(order.status)}
+                        </div>
+                      </div>
+                      
+                      <div className="profile-order-items">
+                        {order.items && order.items.slice(0, 2).map(item => (
+                          <div key={item.id} className="profile-order-item">
+                            <span className="profile-order-item-name">{item.product_name}</span>
+                            <span className="profile-order-item-quantity">× {item.quantity}</span>
+                          </div>
+                        ))}
+                        {order.items && order.items.length > 2 && (
+                          <div className="profile-order-more">
+                            и ещё {order.items.length - 2} товаров
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="profile-order-footer">
+                        <div className="profile-order-total">
+                          <span>Итого:</span>
+                          <strong>{formatPrice(order.total_amount)} ₽</strong>
+                        </div>
+                        <Link to={`/orders/${order.id}`} className="profile-order-link">
+                          Подробнее
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>

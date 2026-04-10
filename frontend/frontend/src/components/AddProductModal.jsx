@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ImageUpload from './ImageUpload';
 import './AddProductModal.css';
 
 const AddProductModal = ({ onClose, onSave, loading }) => {
@@ -6,7 +7,8 @@ const AddProductModal = ({ onClose, onSave, loading }) => {
     name: '',
     description: '',
     price: '',
-    quantity: ''
+    quantity: '',
+    image: ''
   });
   const [error, setError] = useState('');
 
@@ -15,6 +17,10 @@ const AddProductModal = ({ onClose, onSave, loading }) => {
       ...formData,
       [e.target.name]: e.target.value
     });
+  };
+
+  const handleImageSelect = (imageUrl) => {
+    setFormData(prev => ({ ...prev, image: imageUrl }));
   };
 
   const handleSubmit = async (e) => {
@@ -42,7 +48,8 @@ const AddProductModal = ({ onClose, onSave, loading }) => {
       name: formData.name.trim(),
       description: formData.description.trim(),
       price: price,
-      quantity: quantity
+      quantity: quantity,
+      image: formData.image || null
     });
 
     if (result && !result.success) {
@@ -61,6 +68,11 @@ const AddProductModal = ({ onClose, onSave, loading }) => {
         <form onSubmit={handleSubmit} className="modal-form">
           {error && <div className="error-message">{error}</div>}
           
+          <div className="form-group">
+            <label>Фото товара (URL)</label>
+            <ImageUpload onImageSelect={handleImageSelect} currentImage={formData.image} />
+          </div>
+
           <div className="form-group">
             <label>Название товара *</label>
             <input

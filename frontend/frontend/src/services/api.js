@@ -18,18 +18,45 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-let authAPI;
-let productsAPI;
-let reviewsAPI;
-let cartAPI;
+let authAPI = {};
+let productsAPI = {};
+let reviewsAPI = {};
+let cartAPI = {};
 
 if (USE_MOCK) {
-  authAPI = mockAuthAPI;
-  productsAPI = mockProductsAPI;
+  authAPI = {
+    register: mockAuthAPI.register,
+    login: mockAuthAPI.login,
+    getMe: mockAuthAPI.getMe,
+    logout: mockAuthAPI.logout,
+    updateProfile: mockAuthAPI.updateProfile,
+    changePassword: mockAuthAPI.changePassword,
+    getAddresses: mockAuthAPI.getAddresses,
+    createAddress: mockAuthAPI.createAddress,
+    updateAddress: mockAuthAPI.updateAddress,
+    deleteAddress: mockAuthAPI.deleteAddress,
+  };
+  
+  productsAPI = {
+    getAll: mockProductsAPI.getAll,
+    getById: mockProductsAPI.getById,
+    getMyProducts: mockProductsAPI.getMyProducts,
+    create: mockProductsAPI.create,
+    update: mockProductsAPI.update,
+    delete: mockProductsAPI.delete,
+    getReviews: mockProductsAPI.getReviews,
+    createReview: mockProductsAPI.createReview,
+    createOrder: mockProductsAPI.createOrder,
+    getMyOrders: mockProductsAPI.getMyOrders,
+    getOrderById: mockProductsAPI.getOrderById,
+    updateOrderStatus: mockProductsAPI.updateOrderStatus,
+  };
+  
   reviewsAPI = {
     getByProduct: (productId) => mockProductsAPI.getReviews(productId),
     create: (productId, data) => mockProductsAPI.createReview(productId, data),
   };
+  
   cartAPI = {
     getCart: () => mockProductsAPI.getCart(),
     addToCart: (productId, quantity) => mockProductsAPI.addToCart(productId, quantity),
@@ -44,6 +71,10 @@ if (USE_MOCK) {
     getMe: () => api.get('/users/me'),
     updateProfile: (data) => api.put('/users/me', data),
     changePassword: (data) => api.post('/users/me/change-password', data),
+    getAddresses: () => api.get('/delivery-addresses'),
+    createAddress: (data) => api.post('/delivery-addresses', data),
+    updateAddress: (id, data) => api.put(`/delivery-addresses/${id}`, data),
+    deleteAddress: (id) => api.delete(`/delivery-addresses/${id}`),
   };
   
   productsAPI = {
@@ -62,6 +93,10 @@ if (USE_MOCK) {
     create: (data) => api.post('/products', data),
     update: (id, data) => api.put(`/products/${id}`, data),
     delete: (id) => api.delete(`/products/${id}`),
+    createOrder: (addressId, items) => api.post('/orders', { delivery_address_id: addressId, items }),
+    getMyOrders: () => api.get('/orders/my'),
+    getOrderById: (id) => api.get(`/orders/${id}`),
+    updateOrderStatus: (id, status) => api.patch(`/orders/${id}/status`, { status }),
   };
   
   reviewsAPI = {

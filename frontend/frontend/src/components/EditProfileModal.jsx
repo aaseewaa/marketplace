@@ -1,36 +1,57 @@
 import React, { useState } from 'react';
-import './EditProfileModal.css';
+import ImageUpload from './ImageUpload';
+import './EditProductModal.css';
 
-const EditProfileModal = ({ user, onClose, onSave, loading: saving }) => {
+const EditProductModal = ({ product, onClose, onSave, loading }) => {
   const [formData, setFormData] = useState({
-    full_name: user.full_name || '',
-    username: user.username,
-    email: user.email,
+    name: product.name,
+    description: product.description || '',
+    price: product.price,
+    quantity: product.quantity,
+    image: product.image || ''
   });
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value
     });
+  };
+
+  const handleImageSelect = (imageUrl) => {
+    setFormData(prev => ({ ...prev, image: imageUrl }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
-    if (!formData.username.trim()) {
-      setError('Имя пользователя не может быть пустым');
+    if (!formData.name.trim()) {
+      setError('Название товара обязательно');
       return;
     }
 
-    if (!formData.email.trim()) {
-      setError('Email не может быть пустым');
+    const price = Number(formData.price);
+    if (isNaN(price) || price <= 0) {
+      setError('Цена должна быть больше 0');
       return;
     }
 
-    const result = await onSave(formData);
+    const quantity = Number(formData.quantity);
+    if (isNaN(quantity) || quantity < 0) {
+      setError('Количество не может быть отрицательным');
+      return;
+    }
+
+    const result = await onSave({
+      name: formData.name.trim(),
+      description: formData.description.trim(),
+      price: price,
+      quantity: quantity,
+      image: formData.image || null
+    });
+
     if (result && !result.success) {
       setError(result.error);
     }
@@ -40,7 +61,7 @@ const EditProfileModal = ({ user, onClose, onSave, loading: saving }) => {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h3>Редактировать профиль</h3>
+          <h3>Редактировать товар</h3>
           <button onClick={onClose} className="modal-close">×</button>
         </div>
         
@@ -48,23 +69,16 @@ const EditProfileModal = ({ user, onClose, onSave, loading: saving }) => {
           {error && <div className="error-message">{error}</div>}
           
           <div className="form-group">
-            <label>Полное имя</label>
-            <input
-              type="text"
-              name="full_name"
-              value={formData.full_name}
-              onChange={handleChange}
-              className="filter-input"
-              placeholder="Иван Иванов"
-            />
+            <label>Фото товара (URL)</label>
+            <ImageUpload onImageSelect={handleImageSelect} currentImage={formData.image} />
           </div>
 
           <div className="form-group">
-            <label>Имя пользователя</label>
+            <label>Название товара *</label>
             <input
               type="text"
-              name="username"
-              value={formData.username}
+              name="name"
+              value={formData.name}
               onChange={handleChange}
               required
               className="filter-input"
@@ -72,13 +86,40 @@ const EditProfileModal = ({ user, onClose, onSave, loading: saving }) => {
           </div>
 
           <div className="form-group">
-            <label>Email</label>
+            <label>Описание</label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows="4"
+              className="filter-input"
+            ></textarea>
+          </div>
+
+          <div className="form-group">
+            <label>Цена *</label>
             <input
-              type="email"
-              name="email"
-              value={formData.email}
+              type="number"
+              name="price"
+              value={formData.price}
               onChange={handleChange}
               required
+              min="1"
+              step="1"
+              className="filter-input"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Количество *</label>
+            <input
+              type="number"
+              name="quantity"
+              value={formData.quantity}
+              onChange={handleChange}
+              required
+              min="0"
+              step="1"
               className="filter-input"
             />
           </div>
@@ -87,8 +128,8 @@ const EditProfileModal = ({ user, onClose, onSave, loading: saving }) => {
             <button type="button" onClick={onClose} className="button-secondary">
               Отмена
             </button>
-            <button type="submit" disabled={saving} className="button-primary">
-              {saving ? 'Сохранение...' : 'Сохранить'}
+            <button type="submit" disabled={loading} className="button-primary">
+              {loading ? 'Сохранение...' : 'Сохранить'}
             </button>
           </div>
         </form>
@@ -97,4 +138,4 @@ const EditProfileModal = ({ user, onClose, onSave, loading: saving }) => {
   );
 };
 
-export default EditProfileModal;
+export default EditProductModal;
