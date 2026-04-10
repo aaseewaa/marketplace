@@ -15,7 +15,7 @@
         public int DeliveryAddressId { get; set; }
         public string Status { get; set; } = string.Empty;
         public decimal TotalAmount { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
         public DateTime? CompletedAt { get; set; }
         public DateTime? CancelledAt { get; set; }
         public List<OrderItemResponse> Items { get; set; } = new();
