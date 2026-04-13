@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { mockAuthAPI, mockProductsAPI } from './mockApi';
+import { mockAuthAPI, mockProductsAPI, subscribeToMessages, getMessagesPolling } from './mockApi';
 
 const USE_MOCK = true;
 
@@ -50,6 +50,15 @@ if (USE_MOCK) {
     getMyOrders: mockProductsAPI.getMyOrders,
     getOrderById: mockProductsAPI.getOrderById,
     updateOrderStatus: mockProductsAPI.updateOrderStatus,
+    addToWishlist: mockProductsAPI.addToWishlist,
+    removeFromWishlist: mockProductsAPI.removeFromWishlist,
+    getWishlist: mockProductsAPI.getWishlist,
+    isInWishlist: mockProductsAPI.isInWishlist,
+    getConversations: mockProductsAPI.getConversations,
+    getMessages: mockProductsAPI.getMessages,
+    sendMessage: mockProductsAPI.sendMessage,
+    requestReturn: mockProductsAPI.requestReturn,
+    getUserById: mockProductsAPI.getUserById,
   };
   
   reviewsAPI = {
@@ -97,6 +106,15 @@ if (USE_MOCK) {
     getMyOrders: () => api.get('/orders/my'),
     getOrderById: (id) => api.get(`/orders/${id}`),
     updateOrderStatus: (id, status) => api.patch(`/orders/${id}/status`, { status }),
+    addToWishlist: (productId) => api.post('/wishlist', { product_id: productId }),
+    removeFromWishlist: (productId) => api.delete(`/wishlist/${productId}`),
+    getWishlist: () => api.get('/wishlist'),
+    isInWishlist: (productId) => api.get(`/wishlist/check/${productId}`),
+    getConversations: () => api.get('/chat/conversations'),
+    getMessages: (userId) => api.get(`/chat/messages/${userId}`),
+    sendMessage: (userId, message) => api.post('/chat/send', { to_user_id: userId, message }),
+    requestReturn: (orderId, itemId, reason) => api.post('/returns', { order_id: orderId, item_id: itemId, reason }),
+    getUserById: (id) => api.get(`/users/${id}`),
   };
   
   reviewsAPI = {
@@ -114,6 +132,11 @@ if (USE_MOCK) {
 }
 
 export { authAPI, productsAPI, reviewsAPI, cartAPI };
+
+export const chatAPI = {
+  subscribeToMessages: USE_MOCK ? subscribeToMessages : () => () => {},
+  getMessagesPolling: USE_MOCK ? getMessagesPolling : () => Promise.resolve({ data: [] }),
+};
 
 export const usersAPI = {
   getAll: () => api.get('/users'),

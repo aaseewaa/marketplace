@@ -5,7 +5,9 @@ const STORAGE_KEYS = {
   CURRENT_USER: 'mock_current_user',
   CART: 'mock_cart',
   ADDRESSES: 'mock_addresses',
-  ORDERS: 'mock_orders'
+  ORDERS: 'mock_orders',
+  WISHLIST: 'mock_wishlist',
+  MESSAGES: 'mock_messages'
 };
 
 const loadFromStorage = (key, defaultValue) => {
@@ -48,7 +50,11 @@ let mockProducts = loadFromStorage(STORAGE_KEYS.PRODUCTS, [
     description: 'Игровой ноутбук с процессором Intel Core i7, 16GB RAM, 512GB SSD, видеокарта RTX 3060',
     price: 85000,
     quantity: 5,
-    image: 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400',
+    images: [
+      'https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400',
+      'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400',
+      'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400'
+    ],
     created_at: '2026-04-07T12:00:00Z',
     updated_at: '2026-04-07T12:00:00Z'
   },
@@ -60,7 +66,11 @@ let mockProducts = loadFromStorage(STORAGE_KEYS.PRODUCTS, [
     description: '128GB, черный, отличное состояние',
     price: 75000,
     quantity: 3,
-    image: 'https://images.unsplash.com/photo-1678685888221-cda773a1dcd1?w=400',
+    images: [
+      'https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400',
+      'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400',
+      'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400'
+    ],
     created_at: '2026-04-07T12:30:00Z',
     updated_at: '2026-04-07T12:30:00Z'
   },
@@ -72,9 +82,73 @@ let mockProducts = loadFromStorage(STORAGE_KEYS.PRODUCTS, [
     description: 'Беспроводные наушники с шумоподавлением',
     price: 25000,
     quantity: 8,
-    image: 'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=400',
+    images: [
+      'https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400',
+      'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400',
+      'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400'
+    ],
     created_at: '2026-04-07T13:00:00Z',
     updated_at: '2026-04-07T13:00:00Z'
+  },
+  {
+    id: 4,
+    owner_id: 2,
+    owner_username: 'maria88',
+    name: 'Клавиатура Logitech MX Keys',
+    description: 'Беспроводная клавиатура для программистов',
+    price: 12000,
+    quantity: 0,
+    image: null,
+    created_at: '2026-04-07T13:30:00Z',
+    updated_at: '2026-04-07T13:30:00Z'
+  },
+  {
+    id: 5,
+    owner_id: 1,
+    owner_username: 'ivan123',
+    name: 'Монитор Dell UltraSharp 27',
+    description: '27 дюймов, 4K, IPS матрица',
+    price: 45000,
+    quantity: 2,
+    image: null,
+    created_at: '2026-04-07T14:00:00Z',
+    updated_at: '2026-04-07T14:00:00Z'
+  },
+  {
+    id: 6,
+    owner_id: 2,
+    owner_username: 'maria88',
+    name: 'Мышь Logitech MX Master 3',
+    description: 'Беспроводная мышь для профессиональной работы',
+    price: 8000,
+    quantity: 6,
+    image: null,
+    created_at: '2026-04-07T14:30:00Z',
+    updated_at: '2026-04-07T14:30:00Z'
+  },
+  {
+    id: 7,
+    owner_id: 1,
+    owner_username: 'ivan123',
+    name: 'Внешний SSD Samsung T7 1TB',
+    description: 'Портативный твердотельный накопитель',
+    price: 12000,
+    quantity: 4,
+    image: null,
+    created_at: '2026-04-07T15:00:00Z',
+    updated_at: '2026-04-07T15:00:00Z'
+  },
+  {
+    id: 8,
+    owner_id: 2,
+    owner_username: 'maria88',
+    name: 'Фитнес-браслет Xiaomi Mi Band 7',
+    description: 'Новый, в упаковке',
+    price: 3500,
+    quantity: 10,
+    image: null,
+    created_at: '2026-04-07T15:30:00Z',
+    updated_at: '2026-04-07T15:30:00Z'
   }
 ]);
 
@@ -134,7 +208,68 @@ let deliveryAddresses = loadFromStorage(STORAGE_KEYS.ADDRESSES, [
   }
 ]);
 
-let mockOrders = loadFromStorage(STORAGE_KEYS.ORDERS, []);
+let mockOrders = loadFromStorage(STORAGE_KEYS.ORDERS, [
+  {
+    id: 1,
+    buyer_id: 1,
+    delivery_address_id: 1,
+    status: 'completed',
+    total_amount: 25000,
+    created_at: '2026-04-08T10:00:00Z',
+    completed_at: '2026-04-08T14:00:00Z',
+    cancelled_at: null,
+    items: [
+      {
+        id: 101,
+        product_id: 3,
+        product_name: 'Наушники Sony WH-1000XM4',
+        quantity: 1,
+        price_at_order: 25000
+      }
+    ]
+  },
+  {
+    id: 2,
+    buyer_id: 2,
+    delivery_address_id: 2,
+    status: 'created',
+    total_amount: 85000,
+    created_at: '2026-04-09T10:00:00Z',
+    completed_at: null,
+    cancelled_at: null,
+    items: [
+      {
+        id: 201,
+        product_id: 1,
+        product_name: 'Ноутбук Lenovo Legion 5',
+        quantity: 1,
+        price_at_order: 85000
+      }
+    ]
+  }
+]);
+
+let wishlist = loadFromStorage(STORAGE_KEYS.WISHLIST, {});
+let messages = loadFromStorage(STORAGE_KEYS.MESSAGES, [
+  {
+    id: 1,
+    from_user_id: 1,
+    from_username: 'ivan123',
+    to_user_id: 2,
+    message: 'Здравствуйте! Наушники еще в наличии?',
+    is_read: true,
+    created_at: new Date(Date.now() - 86400000).toISOString()
+  },
+  {
+    id: 2,
+    from_user_id: 2,
+    from_username: 'maria88',
+    to_user_id: 1,
+    message: 'Да, в наличии. Можете оформить заказ',
+    is_read: true,
+    created_at: new Date(Date.now() - 82800000).toISOString()
+  }
+]);
 
 let currentUser = loadFromStorage(STORAGE_KEYS.CURRENT_USER, null);
 let cart = loadFromStorage(STORAGE_KEYS.CART, {});
@@ -147,10 +282,47 @@ const saveAllData = () => {
   saveToStorage(STORAGE_KEYS.CART, cart);
   saveToStorage(STORAGE_KEYS.ADDRESSES, deliveryAddresses);
   saveToStorage(STORAGE_KEYS.ORDERS, mockOrders);
+  saveToStorage(STORAGE_KEYS.WISHLIST, wishlist);
+  saveToStorage(STORAGE_KEYS.MESSAGES, messages);
 };
 
 const generateToken = (user) => {
   return btoa(`${user.id}:${Date.now()}`);
+};
+
+let messageListeners = [];
+
+export const subscribeToMessages = (callback) => {
+  messageListeners.push(callback);
+  return () => {
+    messageListeners = messageListeners.filter(cb => cb !== callback);
+  };
+};
+
+export const getMessagesPolling = (otherUserId, lastMessageId) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      if (!currentUser) {
+        resolve({ data: [] });
+        return;
+      }
+
+      const chatMessages = messages.filter(m => 
+        (m.from_user_id === currentUser.id && m.to_user_id === Number(otherUserId)) ||
+        (m.from_user_id === Number(otherUserId) && m.to_user_id === currentUser.id)
+      ).sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+      const newMessages = lastMessageId 
+        ? chatMessages.filter(m => m.id > lastMessageId)
+        : chatMessages;
+
+      resolve({ data: newMessages });
+    }, 100);
+  });
+};  
+
+const notifyNewMessage = (message) => {
+  messageListeners.forEach(callback => callback(message));
 };
 
 export const mockAuthAPI = {
@@ -500,7 +672,7 @@ export const mockProductsAPI = {
           description: data.description || '',
           price: data.price,
           quantity: data.quantity,
-          image: data.image || null,
+          images: data.images || [],
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         };
@@ -545,6 +717,7 @@ export const mockProductsAPI = {
         mockProducts[index] = {
           ...product,
           ...data,
+          images: data.images || product.images || [],
           updated_at: new Date().toISOString()
         };
         
@@ -903,6 +1076,224 @@ export const mockProductsAPI = {
         }
         resolve({ data: { message: 'Корзина очищена' } });
       }, 500);
+    });
+  },
+
+  addToWishlist: (productId) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (!currentUser) {
+          reject({ response: { status: 401, data: { message: 'Необходимо войти в систему' } } });
+          return;
+        }
+
+        if (!wishlist[currentUser.id]) {
+          wishlist[currentUser.id] = [];
+        }
+
+        if (!wishlist[currentUser.id].includes(Number(productId))) {
+          wishlist[currentUser.id].push(Number(productId));
+          saveAllData();
+        }
+
+        resolve({ data: { message: 'Товар добавлен в избранное' } });
+      }, 200);
+    });
+  },
+
+  removeFromWishlist: (productId) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (!currentUser) {
+          reject({ response: { status: 401 } });
+          return;
+        }
+
+        if (wishlist[currentUser.id]) {
+          wishlist[currentUser.id] = wishlist[currentUser.id].filter(id => id !== Number(productId));
+          saveAllData();
+        }
+
+        resolve({ data: { message: 'Товар удален из избранного' } });
+      }, 200);
+    });
+  },
+
+  getWishlist: () => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (!currentUser) {
+          resolve({ data: [] });
+          return;
+        }
+
+        const userWishlist = wishlist[currentUser.id] || [];
+        const wishlistProducts = mockProducts.filter(p => userWishlist.includes(p.id));
+        resolve({ data: wishlistProducts });
+      }, 200);
+    });
+  },
+
+  isInWishlist: (productId) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (!currentUser) {
+          resolve({ data: false });
+          return;
+        }
+        const userWishlist = wishlist[currentUser.id] || [];
+        resolve({ data: userWishlist.includes(Number(productId)) });
+      }, 100);
+    });
+  },
+
+  getConversations: () => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (!currentUser) {
+          resolve({ data: [] });
+          return;
+        }
+
+        const userMessages = messages.filter(m => 
+          m.from_user_id === currentUser.id || m.to_user_id === currentUser.id
+        );
+
+        const conversationMap = new Map();
+        userMessages.forEach(msg => {
+          const otherId = msg.from_user_id === currentUser.id ? msg.to_user_id : msg.from_user_id;
+          if (!conversationMap.has(otherId)) {
+            const otherUser = mockUsers.find(u => u.id === otherId);
+            conversationMap.set(otherId, {
+              user_id: otherId,
+              username: otherUser?.username,
+              last_message: msg.message,
+              last_message_time: msg.created_at,
+              unread: !msg.is_read && msg.to_user_id === currentUser.id
+            });
+          }
+        });
+
+        resolve({ data: Array.from(conversationMap.values()) });
+      }, 200);
+    });
+  },
+
+  getMessages: (otherUserId) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (!currentUser) {
+          resolve({ data: [] });
+          return;
+        }
+
+        const chatMessages = messages.filter(m => 
+          (m.from_user_id === currentUser.id && m.to_user_id === Number(otherUserId)) ||
+          (m.from_user_id === Number(otherUserId) && m.to_user_id === currentUser.id)
+        ).sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+        chatMessages.forEach(msg => {
+          if (msg.to_user_id === currentUser.id && !msg.is_read) {
+            msg.is_read = true;
+          }
+        });
+        saveAllData();
+
+        resolve({ data: chatMessages });
+      }, 200);
+    });
+  },
+
+  sendMessage: (toUserId, messageText) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (!currentUser) {
+          reject({ response: { status: 401 } });
+          return;
+        }
+
+        const newMessage = {
+          id: messages.length + 1,
+          from_user_id: currentUser.id,
+          from_username: currentUser.username,
+          to_user_id: Number(toUserId),
+          message: messageText,
+          is_read: false,
+          created_at: new Date().toISOString()
+        };
+
+        messages.push(newMessage);
+        saveAllData();
+        
+        if (typeof notifyNewMessage === 'function') {
+          notifyNewMessage(newMessage);
+        }
+
+        resolve({ data: newMessage });
+      }, 200);
+    });
+  },
+
+  requestReturn: (orderId, itemId, reason) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (!currentUser) {
+          reject({ response: { status: 401 } });
+          return;
+        }
+
+        const order = mockOrders.find(o => o.id === Number(orderId) && o.buyer_id === currentUser.id);
+        if (!order) {
+          reject({ response: { data: { message: 'Заказ не найден' } } });
+          return;
+        }
+
+        const item = order.items.find(i => i.id === Number(itemId));
+        if (!item) {
+          reject({ response: { data: { message: 'Товар не найден в заказе' } } });
+          return;
+        }
+
+        console.log('Заявка на возврат:', { orderId, itemId, reason });
+
+        resolve({ data: { message: 'Заявка на возврат отправлена' } });
+      }, 500);
+    });
+  },
+
+  getUserById: (userId) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const foundUser = mockUsers.find(u => u.id === Number(userId));
+        if (foundUser) {
+          const { password, ...userWithoutPassword } = foundUser;
+          resolve({ data: userWithoutPassword });
+        } else {
+          reject({ response: { status: 404, data: { message: 'Пользователь не найден' } } });
+        }
+      }, 200);
+    });
+  },
+
+  getMessagesPolling: (otherUserId, lastMessageId) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (!currentUser) {
+          resolve({ data: [] });
+          return;
+        }
+
+        const chatMessages = messages.filter(m => 
+          (m.from_user_id === currentUser.id && m.to_user_id === Number(otherUserId)) ||
+          (m.from_user_id === Number(otherUserId) && m.to_user_id === currentUser.id)
+        ).sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+        const newMessages = lastMessageId 
+          ? chatMessages.filter(m => m.id > lastMessageId)
+          : chatMessages;
+
+        resolve({ data: newMessages });
+      }, 100);
     });
   }
 };

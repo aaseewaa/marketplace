@@ -67,7 +67,16 @@ const Header = () => {
                 Корзина
                 {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
               </Link>
-              <button onClick={logout} className="header-link logout-btn">
+              <Link to="/wishlist" className="header-link">
+                Избранное
+              </Link>
+              <Link to="/returns" className="header-link">
+                Возвраты
+              </Link>
+              <Link to="/chat" className="header-link">
+                Сообщения
+              </Link>
+                <button onClick={logout} className="header-link logout-btn">
                 Выйти
               </button>
             </>

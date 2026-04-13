@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
+import ImageUpload from './ImageUpload';
 import './EditProductModal.css';
 
 const EditProductModal = ({ product, onClose, onSave, loading }) => {
   const [formData, setFormData] = useState({
-    name: product.name,
-    description: product.description || '',
-    price: product.price,
-    quantity: product.quantity
+    name: product?.name || '',
+    description: product?.description || '',
+    price: product?.price || '',
+    quantity: product?.quantity || '',
+    images: product?.images || (product?.image ? [product.image] : [])
   });
   const [error, setError] = useState('');
 
@@ -15,6 +17,10 @@ const EditProductModal = ({ product, onClose, onSave, loading }) => {
       ...formData,
       [e.target.name]: e.target.value
     });
+  };
+
+  const handleImagesChange = (images) => {
+    setFormData(prev => ({ ...prev, images }));
   };
 
   const handleSubmit = async (e) => {
@@ -42,7 +48,8 @@ const EditProductModal = ({ product, onClose, onSave, loading }) => {
       name: formData.name.trim(),
       description: formData.description.trim(),
       price: price,
-      quantity: quantity
+      quantity: quantity,
+      images: formData.images
     });
 
     if (result && !result.success) {
@@ -61,6 +68,12 @@ const EditProductModal = ({ product, onClose, onSave, loading }) => {
         <form onSubmit={handleSubmit} className="modal-form">
           {error && <div className="error-message">{error}</div>}
           
+          <div className="form-group">
+            <label>Фото товара (URL)</label>
+            <ImageUpload onImagesChange={handleImagesChange} currentImages={formData.images} />
+            <p className="hint-text">Добавьте несколько ссылок для создания галереи</p>
+          </div>
+
           <div className="form-group">
             <label>Название товара *</label>
             <input

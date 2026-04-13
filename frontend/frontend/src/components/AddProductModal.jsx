@@ -8,7 +8,7 @@ const AddProductModal = ({ onClose, onSave, loading }) => {
     description: '',
     price: '',
     quantity: '',
-    image: ''
+    images: []
   });
   const [error, setError] = useState('');
 
@@ -19,8 +19,8 @@ const AddProductModal = ({ onClose, onSave, loading }) => {
     });
   };
 
-  const handleImageSelect = (imageUrl) => {
-    setFormData(prev => ({ ...prev, image: imageUrl }));
+  const handleImagesChange = (images) => {
+    setFormData(prev => ({ ...prev, images }));
   };
 
   const handleSubmit = async (e) => {
@@ -49,7 +49,7 @@ const AddProductModal = ({ onClose, onSave, loading }) => {
       description: formData.description.trim(),
       price: price,
       quantity: quantity,
-      image: formData.image || null
+      images: formData.images
     });
 
     if (result && !result.success) {
@@ -70,7 +70,8 @@ const AddProductModal = ({ onClose, onSave, loading }) => {
           
           <div className="form-group">
             <label>Фото товара (URL)</label>
-            <ImageUpload onImageSelect={handleImageSelect} currentImage={formData.image} />
+            <ImageUpload onImagesChange={handleImagesChange} currentImages={formData.images} />
+            <p className="hint-text">Добавьте несколько ссылок для создания галереи</p>
           </div>
 
           <div className="form-group">

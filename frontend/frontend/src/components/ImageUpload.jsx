@@ -1,64 +1,59 @@
 import React, { useState } from 'react';
 import './ImageUpload.css';
 
-const ImageUpload = ({ onImageSelect, currentImage, className }) => {
-  const [imageUrl, setImageUrl] = useState(currentImage || '');
-  const [error, setError] = useState('');
+const ImageUpload = ({ onImagesChange, currentImages = [], className }) => {
+  const [newUrl, setNewUrl] = useState('');
 
-  const handleUrlChange = (e) => {
-    const url = e.target.value;
-    setImageUrl(url);
-    setError('');
-    
-    if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
-      onImageSelect(url);
-    } else if (!url) {
-      onImageSelect(null);
+  const handleAddUrl = () => {
+    if (newUrl && (newUrl.startsWith('http://') || newUrl.startsWith('https://'))) {
+      const newImages = [...currentImages, newUrl];
+      onImagesChange(newImages);
+      setNewUrl('');
     }
   };
 
-  const handleClear = () => {
-    setImageUrl('');
-    onImageSelect(null);
-    setError('');
+  const handleRemoveImage = (index) => {
+    const newImages = currentImages.filter((_, i) => i !== index);
+    onImagesChange(newImages);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddUrl();
+    }
   };
 
   return (
-    <div className={`image-upload-url ${className || ''}`}>
-      <div className="url-input-container">
-        <label className="url-label">Ссылка на изображение</label>
-        <div className="url-input-wrapper">
-          <input
-            type="text"
-            value={imageUrl}
-            onChange={handleUrlChange}
-            placeholder="https://example.com/image.jpg"
-            className="url-input"
-          />
-          {imageUrl && (
-            <button
-              type="button"
-              onClick={handleClear}
-              className="clear-url-btn"
-            >
-              ×
-            </button>
-          )}
-        </div>
-        <p className="url-hint">
-          Введите прямой URL адрес изображения (http:// или https://)
-        </p>
+    <div className="image-upload-multi">
+      <div className="url-input-group">
+        <input
+          type="text"
+          value={newUrl}
+          onChange={(e) => setNewUrl(e.target.value)}
+          onKeyPress={handleKeyPress}
+          placeholder="https://example.com/image.jpg"
+          className="url-input"
+        />
+        <button type="button" onClick={handleAddUrl} className="add-url-btn button-secondary">
+          Добавить
+        </button>
       </div>
       
-      {imageUrl && (
-        <div className="image-preview-url">
-          <img 
-            src={imageUrl} 
-            alt="Preview" 
-            onError={() => setError('Не удалось загрузить изображение по указанному адресу')}
-            onLoad={() => setError('')}
-          />
-          {error && <p className="preview-error">{error}</p>}
+      {currentImages.length > 0 && (
+        <div className="images-preview-list">
+          {currentImages.map((url, index) => (
+            <div key={index} className="preview-item">
+              <img src={url} alt={`Фото ${index + 1}`} />
+              <button
+                type="button"
+                onClick={() => handleRemoveImage(index)}
+                className="remove-image-btn"
+              >
+                ×
+              </button>
+            </div>
+          ))}
         </div>
       )}
     </div>

@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { productsAPI, reviewsAPI, cartAPI } from '../services/api';
 import EditProductModal from '../components/EditProductModal';
+import WishlistButton from '../components/WishlistButton';
+import ProductGallery from '../components/ProductGallery';
 import './ProductPage.css';
 
 const ProductPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
+  const { success, error: showError } = useToast();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -57,15 +61,16 @@ const ProductPage = () => {
     }
 
     if (quantity < 1 || quantity > product.quantity) {
-      alert('Выберите корректное количество');
+      showError('Выберите корректное количество');
       return;
     }
 
     setAddingToCart(true);
     try {
       await cartAPI.addToCart(product.id, quantity);
+      success('Товар добавлен в корзину');
     } catch (err) {
-      alert(err.response?.data?.message || 'Ошибка при добавлении в корзину');
+      showError(err.response?.data?.message || 'Ошибка при добавлении в корзину');
     } finally {
       setAddingToCart(false);
     }
@@ -85,9 +90,9 @@ const ProductPage = () => {
       setReviewComment('');
       setShowReviewForm(false);
       fetchReviews();
-      alert('Отзыв успешно добавлен');
+      success('Отзыв успешно добавлен');
     } catch (err) {
-      alert(err.response?.data?.message || 'Ошибка при добавлении отзыва');
+      showError(err.response?.data?.message || 'Ошибка при добавлении отзыва');
     } finally {
       setSubmittingReview(false);
     }
@@ -99,11 +104,11 @@ const ProductPage = () => {
       const response = await productsAPI.update(id, data);
       setProduct(response.data);
       setShowEditModal(false);
-      alert('Товар успешно обновлен');
+      success('Товар успешно обновлен');
       return { success: true };
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'Ошибка при обновлении товара';
-      alert(errorMessage);
+      showError(errorMessage);
       return { success: false, error: errorMessage };
     } finally {
       setSaving(false);
@@ -118,13 +123,21 @@ const ProductPage = () => {
     setDeleting(true);
     try {
       await productsAPI.delete(id);
-      alert('Товар успешно удален');
+      success('Товар успешно удален');
       navigate('/');
     } catch (err) {
-      alert(err.response?.data?.message || 'Ошибка при удалении товара');
+      showError(err.response?.data?.message || 'Ошибка при удалении товара');
     } finally {
       setDeleting(false);
     }
+  };
+
+  const handleContactSeller = () => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+    navigate(`/chat/${product.owner_id}`);
   };
 
   const formatPrice = (price) => {
@@ -166,30 +179,31 @@ const ProductPage = () => {
       <div className="container">
         <div className="product-layout">
           <div className="product-gallery">
-            <div className="product-main-image">
-              {product.image ? (
-                <img 
-                  src={product.image} 
-                  alt={product.name} 
-                  className="product-main-img"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.parentElement.innerHTML = '<div class="image-placeholder-large"></div>';
-                  }}
-                />
-              ) : (
-                <div className="image-placeholder-large"></div>
-              )}
-            </div>
+            <ProductGallery 
+              images={product.images || (product.image ? [product.image] : [])}
+              productName={product.name}
+            />
           </div>
 
           <div className="product-info-section">
+            <div className="product-actions-header">
+              <div className="product-price-large">
+                {formatPrice(product.price)} ₽
+              </div>
+              <WishlistButton productId={product.id} size="large" />
+            </div>
+
             <h1 className="product-title">{product.name}</h1>
-            <p className="product-seller-info">
-              Продавец: {product.owner_username}
-            </p>
-            <div className="product-price-large">
-              {formatPrice(product.price)} ₽
+            
+            <div className="product-seller-section">
+              <p className="product-seller-info">
+                Продавец: {product.owner_username}
+              </p>
+              {!isOwner && (
+                <button onClick={handleContactSeller} className="contact-seller-btn">
+                  Написать продавцу
+                </button>
+              )}
             </div>
 
             <div className="product-stock">
