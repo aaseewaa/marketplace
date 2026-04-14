@@ -33,7 +33,7 @@ let mockUsers = loadFromStorage(STORAGE_KEYS.USERS, [
   },
   {
     id: 2,
-    email: 'maria@example.com',
+    email: '',
     username: 'maria88',
     password: '12345678',
     full_name: 'Мария Петрова',
@@ -149,6 +149,54 @@ let mockProducts = loadFromStorage(STORAGE_KEYS.PRODUCTS, [
     image: null,
     created_at: '2026-04-07T15:30:00Z',
     updated_at: '2026-04-07T15:30:00Z'
+  },
+  {
+  id: 9,
+  owner_id: 1,
+  owner_username: 'ivan123',
+  name: 'Премиум кожаная куртка',
+  description: 'Натуральная кожа, итальянское производство',
+  price: 25000,
+  quantity: 3,
+  images: ['https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400'],
+  created_at: '2026-04-10T12:00:00Z',
+  updated_at: '2026-04-10T12:00:00Z'
+  },
+  {
+    id: 10,
+    owner_id: 2,
+    owner_username: 'maria88',
+    name: 'Летние кроссовки Nike',
+    description: 'Легкие, дышащие, идеально для лета',
+    price: 8900,
+    quantity: 10,
+    images: ['https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400'],
+    created_at: '2026-04-11T12:00:00Z',
+    updated_at: '2026-04-11T12:00:00Z'
+  },
+  {
+    id: 11,
+    owner_id: 1,
+    owner_username: 'ivan123',
+    name: 'Уличная толстовка',
+    description: 'Хлопок, оверсайз, принт',
+    price: 4500,
+    quantity: 15,
+    images: ['https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400'],
+    created_at: '2026-04-12T12:00:00Z',
+    updated_at: '2026-04-12T12:00:00Z'
+  },
+  {
+    id: 12,
+    owner_id: 2,
+    owner_username: 'maria88',
+    name: 'Беспроводные наушники',
+    description: 'Шумоподавление, 20 часов работы',
+    price: 12000,
+    quantity: 7,
+    images: ['https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=400'],
+    created_at: '2026-04-13T12:00:00Z',
+    updated_at: '2026-04-13T12:00:00Z'
   }
 ]);
 

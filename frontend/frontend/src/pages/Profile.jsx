@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { productsAPI } from '../services/api';
 import ProductCard from '../components/ProductCard';
 import EditProfileModal from '../components/EditProfileModal';
@@ -10,8 +11,11 @@ import './Profile.css';
 
 const Profile = () => {
   const { user, updateProfile, changePassword } = useAuth();
+  const { success, error: showError } = useToast();
   const [userProducts, setUserProducts] = useState([]);
   const [userOrders, setUserOrders] = useState([]);
+  const [wishlist, setWishlist] = useState([]);
+  const [addresses, setAddresses] = useState([]);
   const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(false);
   const [showEditProfile, setShowEditProfile] = useState(false);
@@ -24,6 +28,10 @@ const Profile = () => {
       fetchUserProducts();
     } else if (activeTab === 'orders') {
       fetchUserOrders();
+    } else if (activeTab === 'wishlist') {
+      fetchWishlist();
+    } else if (activeTab === 'addresses') {
+      fetchAddresses();
     }
   }, [activeTab]);
 
@@ -42,15 +50,37 @@ const Profile = () => {
   const fetchUserOrders = async () => {
     setLoading(true);
     try {
-      if (typeof productsAPI.getMyOrders === 'function') {
-        const response = await productsAPI.getMyOrders();
-        setUserOrders(response.data || []);
-      } else {
-        setUserOrders([]);
-      }
+      const response = await productsAPI.getMyOrders();
+      setUserOrders(response.data || []);
     } catch (error) {
       console.error('Ошибка загрузки заказов:', error);
       setUserOrders([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchWishlist = async () => {
+    setLoading(true);
+    try {
+      const response = await productsAPI.getWishlist();
+      setWishlist(response.data || []);
+    } catch (error) {
+      console.error('Ошибка загрузки избранного:', error);
+      setWishlist([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchAddresses = async () => {
+    setLoading(true);
+    try {
+      const response = await productsAPI.getAddresses();
+      setAddresses(response.data || []);
+    } catch (error) {
+      console.error('Ошибка загрузки адресов:', error);
+      setAddresses([]);
     } finally {
       setLoading(false);
     }
@@ -62,7 +92,7 @@ const Profile = () => {
     setSaving(false);
     if (result.success) {
       setShowEditProfile(false);
-      alert('Профиль успешно обновлен');
+      success('Профиль успешно обновлен');
     }
     return result;
   };
@@ -73,7 +103,7 @@ const Profile = () => {
     setSaving(false);
     if (result.success) {
       setShowChangePassword(false);
-      alert('Пароль успешно изменен');
+      success('Пароль успешно изменен');
     }
     return result;
   };
@@ -84,11 +114,11 @@ const Profile = () => {
       const response = await productsAPI.create(productData);
       setUserProducts(prev => [response.data, ...prev]);
       setShowAddProduct(false);
-      alert('Товар успешно добавлен');
+      success('Товар успешно добавлен');
       return { success: true };
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'Ошибка при добавлении товара';
-      alert(errorMessage);
+      showError(errorMessage);
       return { success: false, error: errorMessage };
     } finally {
       setSaving(false);
@@ -125,6 +155,15 @@ const Profile = () => {
     });
   };
 
+  const tabs = [
+    { id: 'profile', label: 'Профиль' },
+    { id: 'products', label: 'Мои товары' },
+    { id: 'orders', label: 'Заказы' },
+    { id: 'returns', label: 'Возвраты' },
+    { id: 'wishlist', label: 'Избранное' },
+    { id: 'addresses', label: 'Адреса' }
+  ];
+
   if (!user) return null;
 
   return (
@@ -145,24 +184,15 @@ const Profile = () => {
         </div>
 
         <div className="profile-tabs">
-          <button
-            className={`tab ${activeTab === 'profile' ? 'active' : ''}`}
-            onClick={() => setActiveTab('profile')}
-          >
-            Профиль
-          </button>
-          <button
-            className={`tab ${activeTab === 'products' ? 'active' : ''}`}
-            onClick={() => setActiveTab('products')}
-          >
-            Мои товары
-          </button>
-          <button
-            className={`tab ${activeTab === 'orders' ? 'active' : ''}`}
-            onClick={() => setActiveTab('orders')}
-          >
-            Мои заказы
-          </button>
+          {tabs.map(tab => (
+            <button
+              key={tab.id}
+              className={`tab ${activeTab === tab.id ? 'active' : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
         <div className="profile-content">
@@ -287,6 +317,63 @@ const Profile = () => {
                         <Link to={`/orders/${order.id}`} className="profile-order-link">
                           Подробнее
                         </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'returns' && (
+            <div className="returns-section">
+              <h3>Возвраты</h3>
+              <div className="empty-state">
+                <p>Здесь будут отображаться ваши заявки на возврат</p>
+                <Link to="/returns" className="button-primary">Перейти к возвратам</Link>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'wishlist' && (
+            <div className="wishlist-section">
+              <h3>Избранное</h3>
+              {loading ? (
+                <div className="loading">Загрузка...</div>
+              ) : wishlist.length === 0 ? (
+                <div className="empty-state">
+                  <p>У вас пока нет избранных товаров</p>
+                  <Link to="/" className="button-primary">Перейти к покупкам</Link>
+                </div>
+              ) : (
+                <div className="products-grid">
+                  {wishlist.map(product => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'addresses' && (
+            <div className="addresses-section">
+              <h3>Мои адреса</h3>
+              {loading ? (
+                <div className="loading">Загрузка...</div>
+              ) : addresses.length === 0 ? (
+                <div className="empty-state">
+                  <p>У вас пока нет сохраненных адресов</p>
+                  <Link to="/checkout" className="button-primary">Добавить адрес</Link>
+                </div>
+              ) : (
+                <div className="addresses-list">
+                  {addresses.map(address => (
+                    <div key={address.id} className="address-card-profile">
+                      <div className="address-details">
+                        <p className="address-line">{address.address_line}</p>
+                        <p className="address-city">{address.city}, {address.postal_code}</p>
+                        <p className="address-country">{address.country}</p>
+                        {address.is_default && <span className="default-badge">По умолчанию</span>}
                       </div>
                     </div>
                   ))}

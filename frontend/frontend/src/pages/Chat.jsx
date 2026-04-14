@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useChat } from '../context/ChatContext';
 import { useToast } from '../context/ToastContext';
 import { productsAPI, chatAPI } from '../services/api';
 import './Chat.css';
@@ -9,6 +10,7 @@ const Chat = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { fetchConversations, clearNotification } = useChat();
   const { success, error: showError } = useToast();
   const [conversations, setConversations] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -19,20 +21,13 @@ const Chat = () => {
   const [loadingUser, setLoadingUser] = useState(false);
   const messagesEndRef = useRef(null);
   const lastMessageIdRef = useRef(0);
+  const pollingInterval = useRef(null);
 
   useEffect(() => {
-    fetchConversations();
-    
-    const unsubscribe = chatAPI.subscribeToMessages((newMessage) => {
-      if (selectedUser && newMessage.from_user_id === selectedUser.user_id) {
-        setMessages(prev => [...prev, newMessage]);
-        lastMessageIdRef.current = newMessage.id;
-        setTimeout(scrollToBottom, 100);
-      }
-      fetchConversations();
-    });
-    
-    return () => unsubscribe();
+    loadConversations();
+    return () => {
+      if (pollingInterval.current) clearInterval(pollingInterval.current);
+    };
   }, []);
 
   useEffect(() => {
@@ -46,31 +41,19 @@ const Chat = () => {
   }, [messages]);
 
   useEffect(() => {
-    if (!selectedUser) return;
-    
-    const interval = setInterval(async () => {
-      try {
-        const response = await chatAPI.getMessagesPolling(selectedUser.user_id, lastMessageIdRef.current);
-        if (response.data && response.data.length > 0) {
-          setMessages(prev => [...prev, ...response.data]);
-          const maxId = Math.max(...response.data.map(m => m.id), lastMessageIdRef.current);
-          lastMessageIdRef.current = maxId;
-          setTimeout(scrollToBottom, 100);
-          fetchConversations();
-        }
-      } catch (error) {
-        console.error('Polling error:', error);
-      }
-    }, 3000);
-    
-    return () => clearInterval(interval);
+    if (selectedUser) {
+      startMessagePolling();
+    }
+    return () => {
+      if (pollingInterval.current) clearInterval(pollingInterval.current);
+    };
   }, [selectedUser]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const fetchConversations = async () => {
+  const loadConversations = async () => {
     setLoading(true);
     try {
       const response = await productsAPI.getConversations();
@@ -92,6 +75,26 @@ const Chat = () => {
     } catch (error) {
       console.error('Ошибка загрузки сообщений:', error);
     }
+  };
+
+  const startMessagePolling = () => {
+    if (pollingInterval.current) clearInterval(pollingInterval.current);
+    pollingInterval.current = setInterval(async () => {
+      if (!selectedUser) return;
+      try {
+        const response = await chatAPI.getMessagesPolling(selectedUser.user_id, lastMessageIdRef.current);
+        if (response.data && response.data.length > 0) {
+          setMessages(prev => [...prev, ...response.data]);
+          const maxId = Math.max(...response.data.map(m => m.id), lastMessageIdRef.current);
+          lastMessageIdRef.current = maxId;
+          scrollToBottom();
+          loadConversations();
+          fetchConversations();
+        }
+      } catch (error) {
+        console.error('Polling error:', error);
+      }
+    }, 2000);
   };
 
   const handleUserFromUrl = async () => {
@@ -149,7 +152,10 @@ const Chat = () => {
         return [updatedConv, ...filtered];
       });
       
+      loadConversations();
+      fetchConversations();
       success('Сообщение отправлено');
+      clearNotification();
     } catch (error) {
       showError('Ошибка отправки сообщения');
     } finally {
@@ -161,6 +167,7 @@ const Chat = () => {
     setSelectedUser(conv);
     navigate(`/chat/${conv.user_id}`);
     await fetchMessages(conv.user_id);
+    clearNotification();
   };
 
   const formatTime = (date) => {

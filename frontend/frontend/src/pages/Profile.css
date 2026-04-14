@@ -291,3 +291,168 @@
 .profile-order-link:hover {
   text-decoration: underline;
 }
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+.profile-orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.profile-order-card {
+  background: #fafafa;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid #e5e5e5;
+}
+
+.profile-order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.profile-order-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-order-number {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.profile-order-date {
+  font-size: 12px;
+  color: #666;
+}
+
+.profile-order-status {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-created {
+  background: #fff3e0;
+  color: #e67e22;
+}
+
+.status-completed {
+  background: #e6f7e6;
+  color: #2e7d32;
+}
+
+.status-cancelled {
+  background: #fee;
+  color: #c00;
+}
+
+.profile-order-items {
+  margin-bottom: 12px;
+}
+
+.profile-order-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 4px 0;
+}
+
+.profile-order-item-name {
+  color: #333;
+}
+
+.profile-order-item-quantity {
+  color: #666;
+}
+
+.profile-order-more {
+  font-size: 12px;
+  color: #999;
+  margin-top: 4px;
+}
+
+.profile-order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.profile-order-total {
+  font-size: 14px;
+}
+
+.profile-order-total strong {
+  font-size: 16px;
+  margin-left: 8px;
+}
+
+.profile-order-link {
+  color: #1a1a1a;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.profile-order-link:hover {
+  text-decoration: underline;
+}
+
+.addresses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.address-card-profile {
+  background: #fafafa;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid #e5e5e5;
+}
+
+.address-card-profile .address-line {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.address-card-profile .address-city {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 2px;
+}
+
+.address-card-profile .address-country {
+  font-size: 13px;
+  color: #666;
+}
+
+.default-badge {
+  display: inline-block;
+  background: #e5e5e5;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-top: 6px;
+}
+
+.wishlist-section h3,
+.addresses-section h3,
+.returns-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}

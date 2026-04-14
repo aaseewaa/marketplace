@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { productsAPI } from '../services/api';
 import ProductCard from '../components/ProductCard';
 import Filters from '../components/Filters';
+import HeroSection from '../components/HeroSection';
 import './Home.css';
 
 const Home = () => {
@@ -18,6 +19,7 @@ const Home = () => {
   });
   
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -65,9 +67,17 @@ const Home = () => {
     });
   };
 
+  const handleCategoryClick = (searchQuery) => {
+    setFilters(prev => ({ ...prev, search: searchQuery }));
+    navigate(`/?search=${encodeURIComponent(searchQuery)}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className="home-page">
       <div className="container">
+        <HeroSection onCategoryClick={handleCategoryClick} />
+        
         <div className="home-layout">
           <aside className="filters-sidebar">
             <Filters
@@ -79,9 +89,11 @@ const Home = () => {
           
           <main className="products-main">
             <div className="products-header">
-              <h1>Все товары</h1>
+              <h2>
+                {filters.search ? `Результаты поиска: "${filters.search}"` : 'Рекомендации'}
+              </h2>
               <div className="products-count">
-                {!loading && !error && <span>Найдено {products.length} товаров</span>}
+                {!loading && !error && <span>{products.length} товаров</span>}
               </div>
             </div>
             
