@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ImageUpload from './ImageUpload';
-import './AddProductModal.css';
+import './Modal.css';
 
 const AddProductModal = ({ onClose, onSave, loading }) => {
   const [formData, setFormData] = useState({
@@ -96,7 +96,7 @@ const AddProductModal = ({ onClose, onSave, loading }) => {
               rows="4"
               className="filter-input"
               placeholder="Подробное описание товара..."
-            ></textarea>
+            />
           </div>
 
           <div className="form-group">

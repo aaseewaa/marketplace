@@ -33,7 +33,7 @@ let mockUsers = loadFromStorage(STORAGE_KEYS.USERS, [
   },
   {
     id: 2,
-    email: '',
+    email: 'maria@example.com',
     username: 'maria88',
     password: '12345678',
     full_name: 'Мария Петрова',
@@ -338,15 +338,6 @@ const generateToken = (user) => {
   return btoa(`${user.id}:${Date.now()}`);
 };
 
-let messageListeners = [];
-
-export const subscribeToMessages = (callback) => {
-  messageListeners.push(callback);
-  return () => {
-    messageListeners = messageListeners.filter(cb => cb !== callback);
-  };
-};
-
 export const getMessagesPolling = (otherUserId, lastMessageId) => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -369,9 +360,6 @@ export const getMessagesPolling = (otherUserId, lastMessageId) => {
   });
 };  
 
-const notifyNewMessage = (message) => {
-  messageListeners.forEach(callback => callback(message));
-};
 
 export const mockAuthAPI = {
   register: (data) => {
@@ -1227,61 +1215,6 @@ export const mockProductsAPI = {
     });
   },
 
-  getMessages: (otherUserId) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        if (!currentUser) {
-          resolve({ data: [] });
-          return;
-        }
-
-        const chatMessages = messages.filter(m => 
-          (m.from_user_id === currentUser.id && m.to_user_id === Number(otherUserId)) ||
-          (m.from_user_id === Number(otherUserId) && m.to_user_id === currentUser.id)
-        ).sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-
-        chatMessages.forEach(msg => {
-          if (msg.to_user_id === currentUser.id && !msg.is_read) {
-            msg.is_read = true;
-          }
-        });
-        saveAllData();
-
-        resolve({ data: chatMessages });
-      }, 200);
-    });
-  },
-
-  sendMessage: (toUserId, messageText) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (!currentUser) {
-          reject({ response: { status: 401 } });
-          return;
-        }
-
-        const newMessage = {
-          id: messages.length + 1,
-          from_user_id: currentUser.id,
-          from_username: currentUser.username,
-          to_user_id: Number(toUserId),
-          message: messageText,
-          is_read: false,
-          created_at: new Date().toISOString()
-        };
-
-        messages.push(newMessage);
-        saveAllData();
-        
-        if (typeof notifyNewMessage === 'function') {
-          notifyNewMessage(newMessage);
-        }
-
-        resolve({ data: newMessage });
-      }, 200);
-    });
-  },
-
   requestReturn: (orderId, itemId, reason) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -1322,26 +1255,4 @@ export const mockProductsAPI = {
       }, 200);
     });
   },
-
-  getMessagesPolling: (otherUserId, lastMessageId) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        if (!currentUser) {
-          resolve({ data: [] });
-          return;
-        }
-
-        const chatMessages = messages.filter(m => 
-          (m.from_user_id === currentUser.id && m.to_user_id === Number(otherUserId)) ||
-          (m.from_user_id === Number(otherUserId) && m.to_user_id === currentUser.id)
-        ).sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-
-        const newMessages = lastMessageId 
-          ? chatMessages.filter(m => m.id > lastMessageId)
-          : chatMessages;
-
-        resolve({ data: newMessages });
-      }, 100);
-    });
-  }
 };

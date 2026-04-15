@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ImageUpload from './ImageUpload';
-import './EditProductModal.css';
+import './Modal.css';
 
 const EditProductModal = ({ product, onClose, onSave, loading }) => {
   const [formData, setFormData] = useState({
@@ -94,7 +94,7 @@ const EditProductModal = ({ product, onClose, onSave, loading }) => {
               onChange={handleChange}
               rows="4"
               className="filter-input"
-            ></textarea>
+            />
           </div>
 
           <div className="form-group">

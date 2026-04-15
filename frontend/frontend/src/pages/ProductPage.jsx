@@ -5,7 +5,6 @@ import { useToast } from '../context/ToastContext';
 import { productsAPI, reviewsAPI, cartAPI } from '../services/api';
 import EditProductModal from '../components/EditProductModal';
 import WishlistButton from '../components/WishlistButton';
-import ProductGallery from '../components/ProductGallery';
 import './ProductPage.css';
 
 const ProductPage = () => {
@@ -26,6 +25,8 @@ const ProductPage = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [isZoomed, setIsZoomed] = useState(false);
 
   useEffect(() => {
     fetchProduct();
@@ -144,6 +145,26 @@ const ProductPage = () => {
     return new Intl.NumberFormat('ru-RU').format(price);
   };
 
+  const getImageList = () => {
+    if (product?.images && product.images.length > 0) {
+      return product.images;
+    }
+    if (product?.image) {
+      return [product.image];
+    }
+    return [];
+  };
+
+  const imageList = getImageList();
+
+  const handleImageClick = (index) => {
+    setSelectedImage(index);
+  };
+
+  const handleMainImageClick = () => {
+    setIsZoomed(!isZoomed);
+  };
+
   if (loading) {
     return (
       <div className="product-page">
@@ -179,10 +200,41 @@ const ProductPage = () => {
       <div className="container">
         <div className="product-layout">
           <div className="product-gallery">
-            <ProductGallery 
-              images={product.images || (product.image ? [product.image] : [])}
-              productName={product.name}
-            />
+            <div 
+              className={`gallery-main ${isZoomed ? 'zoomed' : ''}`}
+              onClick={handleMainImageClick}
+            >
+              {imageList.length > 0 && imageList[selectedImage] ? (
+                <img 
+                  src={imageList[selectedImage]} 
+                  alt={product.name}
+                  className="gallery-main-img"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.parentElement.innerHTML = '<div class="image-placeholder-large"></div>';
+                  }}
+                />
+              ) : (
+                <div className="image-placeholder-large"></div>
+              )}
+              {imageList.length > 0 && (
+                <div className="zoom-icon">🔍</div>
+              )}
+            </div>
+            
+            {imageList.length > 1 && (
+              <div className="gallery-thumbnails">
+                {imageList.map((img, index) => (
+                  <div
+                    key={index}
+                    className={`thumbnail ${selectedImage === index ? 'active' : ''}`}
+                    onClick={() => handleImageClick(index)}
+                  >
+                    <img src={img} alt={`${product.name} ${index + 1}`} />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="product-info-section">
@@ -199,11 +251,6 @@ const ProductPage = () => {
               <p className="product-seller-info">
                 Продавец: {product.owner_username}
               </p>
-              {!isOwner && (
-                <button onClick={handleContactSeller} className="contact-seller-btn">
-                  Написать продавцу
-                </button>
-              )}
             </div>
 
             <div className="product-stock">

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { mockAuthAPI, mockProductsAPI, subscribeToMessages, getMessagesPolling } from './mockApi';
+import { mockAuthAPI, mockProductsAPI } from './mockApi';
 
 const USE_MOCK = true;
 
@@ -54,9 +54,6 @@ if (USE_MOCK) {
     removeFromWishlist: mockProductsAPI.removeFromWishlist,
     getWishlist: mockProductsAPI.getWishlist,
     isInWishlist: mockProductsAPI.isInWishlist,
-    getConversations: mockProductsAPI.getConversations,
-    getMessages: mockProductsAPI.getMessages,
-    sendMessage: mockProductsAPI.sendMessage,
     requestReturn: mockProductsAPI.requestReturn,
     getUserById: mockProductsAPI.getUserById,
   };
@@ -132,11 +129,6 @@ if (USE_MOCK) {
 }
 
 export { authAPI, productsAPI, reviewsAPI, cartAPI };
-
-export const chatAPI = {
-  subscribeToMessages: USE_MOCK ? subscribeToMessages : () => () => {},
-  getMessagesPolling: USE_MOCK ? getMessagesPolling : () => Promise.resolve({ data: [] }),
-};
 
 export const usersAPI = {
   getAll: () => api.get('/users'),

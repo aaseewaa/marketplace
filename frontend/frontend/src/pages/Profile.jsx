@@ -10,7 +10,7 @@ import AddProductModal from '../components/AddProductModal';
 import './Profile.css';
 
 const Profile = () => {
-  const { user, updateProfile, changePassword } = useAuth();
+  const { user, updateProfile, changePassword, logout } = useAuth();
   const { success, error: showError } = useToast();
   const [userProducts, setUserProducts] = useState([]);
   const [userOrders, setUserOrders] = useState([]);
@@ -233,6 +233,12 @@ const Profile = () => {
                   className="action-button secondary"
                 >
                   Изменить пароль
+                </button>
+                <button 
+                  onClick={logout} 
+                  className="action-button logout-button"
+                >
+                  Выйти из аккаунта
                 </button>
               </div>
             </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './AddressModal.css';
+import './Modal.css';
 
 const AddressModal = ({ address, onClose, onSave, loading }) => {
   const [formData, setFormData] = useState({

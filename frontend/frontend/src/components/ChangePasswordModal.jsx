@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import './ChangePasswordModal.css';
+import './Modal.css';
 
-const ChangePasswordModal = ({ onClose, onChangePassword, loading: saving }) => {
+const ChangePasswordModal = ({ onClose, onChangePassword, loading }) => {
   const [formData, setFormData] = useState({
     currentPassword: '',
     newPassword: '',
@@ -99,8 +99,8 @@ const ChangePasswordModal = ({ onClose, onChangePassword, loading: saving }) => 
             <button type="button" onClick={onClose} className="button-secondary">
               Отмена
             </button>
-            <button type="submit" disabled={saving} className="button-primary">
-              {saving ? 'Сохранение...' : 'Изменить пароль'}
+            <button type="submit" disabled={loading} className="button-primary">
+              {loading ? 'Сохранение...' : 'Изменить пароль'}
             </button>
           </div>
         </form>

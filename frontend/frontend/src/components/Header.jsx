@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useChat } from '../context/ChatContext';
 import { cartAPI } from '../services/api';
 import './Header.css';
 
 const Header = () => {
   const { user, logout, isAuthenticated } = useAuth();
-  const { unreadCount } = useChat();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [cartCount, setCartCount] = useState(0);
@@ -65,13 +63,6 @@ const Header = () => {
               <button onClick={() => navigate('/sell')} className="sell-btn">
                 Продавать
               </button>
-              
-              <Link to="/chat" className="header-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                </svg>
-                {unreadCount > 0 && <span className="badge">{unreadCount}</span>}
-              </Link>
               
               <Link to="/cart" className="header-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">

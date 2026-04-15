@@ -148,6 +148,18 @@
   background: #fafafa;
 }
 
+.logout-button {
+  background: white !important;
+  color: #c00 !important;
+  border: 1px solid #c00 !important;
+  margin-top: 8px;
+}
+
+.logout-button:hover {
+  background: #c00 !important;
+  color: white !important;
+}
+
 .section-header {
   display: flex;
   justify-content: space-between;
@@ -178,118 +190,10 @@
   margin-bottom: 20px;
 }
 
-.primary-btn {
-  display: inline-block;
-  background: #1a1a1a;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-}
-
 .loading {
   text-align: center;
   padding: 40px;
   color: #666;
-}
-
-.profile-orders-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.profile-order-card {
-  background: #fafafa;
-  border-radius: 12px;
-  padding: 16px;
-  border: 1px solid #e5e5e5;
-}
-
-.profile-order-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.profile-order-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.profile-order-number {
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.profile-order-date {
-  font-size: 12px;
-  color: #666;
-}
-
-.profile-order-status {
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.profile-order-items {
-  margin-bottom: 12px;
-}
-
-.profile-order-item {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  padding: 4px 0;
-}
-
-.profile-order-item-name {
-  color: #333;
-}
-
-.profile-order-item-quantity {
-  color: #666;
-}
-
-.profile-order-more {
-  font-size: 12px;
-  color: #999;
-  margin-top: 4px;
-}
-
-.profile-order-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 12px;
-  border-top: 1px solid #e5e5e5;
-}
-
-.profile-order-total {
-  font-size: 14px;
-}
-
-.profile-order-total strong {
-  font-size: 16px;
-  margin-left: 8px;
-}
-
-.profile-order-link {
-  color: #1a1a1a;
-  font-size: 13px;
-  font-weight: 500;
-  text-decoration: none;
-}
-
-.profile-order-link:hover {
-  text-decoration: underline;
 }
 
 .products-grid {
