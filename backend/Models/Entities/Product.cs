@@ -39,6 +39,9 @@ public partial class Product
     [Column("deleted_at")]
     public DateTime? DeletedAt { get; set; }
 
+    [Column("image_url")]
+    public string? ImageUrl { get; set; }
+
     [InverseProperty("Product")]
     public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
 

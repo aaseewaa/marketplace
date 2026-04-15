@@ -29,13 +29,14 @@ namespace Mini_Marketplace.Controllers
             var userId = GetCurrentUserId();
             var user = await _userRepository.GetByIdAsync(userId);
 
-            var product = new Models.Entities.Product
+            var product = new Product
             {
                 OwnerId = userId,
                 Name = request.Name,
                 Description = request.Description,
                 Price = request.Price,
-                Quantity = request.Quantity
+                Quantity = request.Quantity,
+                ImageUrl = request.ImageUrl
             };
 
             var created = await _productRepository.AddAsync(product);
@@ -50,7 +51,8 @@ namespace Mini_Marketplace.Controllers
                 Price = created.Price,
                 Quantity = created.Quantity,
                 CreatedAt = created.CreatedAt,
-                UpdatedAt = created.UpdatedAt
+                UpdatedAt = created.UpdatedAt,
+                ImageUrl = created.ImageUrl
             };
 
             return Ok(response);
@@ -71,7 +73,8 @@ namespace Mini_Marketplace.Controllers
                 Price = p.Price,
                 Quantity = p.Quantity,
                 CreatedAt = p.CreatedAt,
-                UpdatedAt = p.UpdatedAt
+                UpdatedAt = p.UpdatedAt,
+                ImageUrl = p.ImageUrl
             });
 
             return Ok(result);
@@ -94,7 +97,8 @@ namespace Mini_Marketplace.Controllers
                 Price = p.Price,
                 Quantity = p.Quantity,
                 CreatedAt = p.CreatedAt,
-                UpdatedAt = p.UpdatedAt
+                UpdatedAt = p.UpdatedAt,
+                ImageUrl = p.ImageUrl,
             });
 
             return Ok(result);
@@ -118,7 +122,8 @@ namespace Mini_Marketplace.Controllers
                 Price = product.Price,
                 Quantity = product.Quantity,
                 CreatedAt = product.CreatedAt,
-                UpdatedAt = product.UpdatedAt
+                UpdatedAt = product.UpdatedAt,
+                ImageUrl = product.ImageUrl
             };
 
             return Ok(result);
@@ -142,6 +147,7 @@ namespace Mini_Marketplace.Controllers
             product.Price = request.Price;
             product.Quantity = request.Quantity;
             product.UpdatedAt = DateTime.UtcNow;
+            product.ImageUrl = request.ImageUrl;
 
             await _productRepository.UpdateAsync(product);
 
@@ -157,7 +163,8 @@ namespace Mini_Marketplace.Controllers
                 Price = product.Price,
                 Quantity = product.Quantity,
                 CreatedAt = product.CreatedAt,
-                UpdatedAt = product.UpdatedAt
+                UpdatedAt = product.UpdatedAt,
+                ImageUrl = product.ImageUrl
             };
 
             return Ok(response);
