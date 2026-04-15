@@ -1,0 +1,133 @@
+.returns-page {
+  min-height: calc(100vh - 65px);
+  background: #fafafa;
+  padding: 40px 0;
+}
+
+.returns-page h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 32px;
+}
+
+.returns-empty {
+  background: white;
+  border-radius: 12px;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.returns-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.return-order-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.return-order-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: #fafafa;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.return-order-number {
+  font-weight: 600;
+}
+
+.return-order-date {
+  font-size: 13px;
+  color: #666;
+}
+
+.return-order-items {
+  padding: 16px 20px;
+}
+
+.return-order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.return-order-item:last-child {
+  border-bottom: none;
+}
+
+.return-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.return-item-name {
+  font-weight: 500;
+}
+
+.return-item-price {
+  font-size: 13px;
+  color: #666;
+}
+
+.return-btn {
+  padding: 6px 16px;
+  background: none;
+  border: 1px solid #e67e22;
+  border-radius: 6px;
+  color: #e67e22;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.return-btn:hover {
+  background: #e67e22;
+  color: white;
+}
+
+.return-form-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.return-form-content {
+  background: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 500px;
+  padding: 24px;
+}
+
+.return-form-content h3 {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.return-product {
+  color: #666;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.return-form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}

@@ -1,0 +1,162 @@
+.orders-page {
+  min-height: calc(100vh - 65px);
+  background: #fafafa;
+  padding: 40px 0;
+}
+
+.orders-page h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 32px;
+}
+
+.orders-empty {
+  background: white;
+  border-radius: 12px;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.orders-empty p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.order-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background: #fafafa;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.order-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.order-number {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.order-date {
+  font-size: 13px;
+  color: #666;
+}
+
+.order-status {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.status-created {
+  background: #fff3e0;
+  color: #e67e22;
+}
+
+.status-completed {
+  background: #e6f7e6;
+  color: #2e7d32;
+}
+
+.status-cancelled {
+  background: #fee;
+  color: #c00;
+}
+
+.order-items-list {
+  padding: 16px 24px;
+}
+
+.order-item-row {
+  display: flex;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.order-item-row:last-child {
+  border-bottom: none;
+}
+
+.order-item-image {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+  background: #f5f5f5;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.order-item-details {
+  flex: 1;
+}
+
+.order-item-name {
+  display: block;
+  font-weight: 500;
+  font-size: 14px;
+  color: #1a1a1a;
+  margin-bottom: 6px;
+  text-decoration: none;
+}
+
+.order-item-name:hover {
+  text-decoration: underline;
+}
+
+.order-item-meta {
+  font-size: 13px;
+  color: #666;
+}
+
+.order-item-price {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: #fafafa;
+  border-top: 1px solid #e5e5e5;
+}
+
+.order-total {
+  font-size: 14px;
+}
+
+.order-total strong {
+  font-size: 18px;
+  margin-left: 8px;
+}
+
+.order-details-link {
+  color: #1a1a1a;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.order-details-link:hover {
+  text-decoration: underline;
+}
