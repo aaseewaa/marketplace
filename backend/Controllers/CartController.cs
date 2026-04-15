@@ -79,7 +79,7 @@ namespace Mini_Marketplace.Controllers
             }
             else
             {
-                var cartItem = new Models.Entities.CartItem
+                var cartItem = new CartItem
                 {
                     CartId = cart.Id,
                     ProductId = request.ProductId,
@@ -133,6 +133,20 @@ namespace Mini_Marketplace.Controllers
             await _cartRepository.RemoveCartItemAsync(cartItem);
 
             return Ok(new MessageResponse("Cart item deleted"));
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> ClearCart()
+        {
+            var userId = GetCurrentUserId();
+            var cart = await _cartRepository.GetCartWithItemsAsync(userId);
+
+            if (cart == null)
+                return NotFound();
+
+            await _cartRepository.ClearCartAsync(cart.Id);
+
+            return Ok(new { message = "Cart cleared" });
         }
     }
 }

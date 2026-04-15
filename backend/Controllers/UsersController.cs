@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mini_Marketplace.Models.DTO.Users;
-using Mini_Marketplace.Models.Entities;
 using Mini_Marketplace.Repositories.Interfaces;
+using Mini_Marketplace.Services;
 
 namespace Mini_Marketplace.Controllers
 {
@@ -11,10 +11,12 @@ namespace Mini_Marketplace.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
+        private readonly IAuthService _authService;
 
-        public UsersController(IUserRepository userRepository)
+        public UsersController(IUserRepository userRepository, IAuthService authService)
         {
             _userRepository = userRepository;
+            _authService = authService;
         }
 
         [HttpGet]
@@ -52,6 +54,58 @@ namespace Mini_Marketplace.Controllers
             };
 
             return Ok(result);
+        }
+
+        [HttpPut("me")]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
+        {
+            var userId = int.Parse(User.FindFirst("nameid")?.Value ?? "0");
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            if (user == null)
+                return NotFound();
+
+            if (!string.IsNullOrWhiteSpace(request.FullName))
+                user.FullName = request.FullName;
+
+            if (!string.IsNullOrWhiteSpace(request.Username))
+            {
+                var existingUser = await _userRepository.GetByUsernameAsync(request.Username);
+                if (existingUser != null && existingUser.Id != userId)
+                    return BadRequest(new { message = "Username already taken" });
+
+                user.Username = request.Username;
+            }
+
+            user.UpdatedAt = DateTime.UtcNow;
+            await _userRepository.UpdateAsync(user);
+
+            return Ok(new UserDto
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Username = user.Username,
+                FullName = user.FullName
+            });
+        }
+
+        [HttpPost("me/change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            var userId = int.Parse(User.FindFirst("nameid")?.Value ?? "0");
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            if (user == null)
+                return NotFound();
+
+            if (!_authService.VerifyPassword(request.CurrentPassword, user.PasswordHash))
+                return BadRequest(new { message = "Current password is incorrect" });
+
+            user.PasswordHash = _authService.HashPassword(request.NewPassword);
+            user.UpdatedAt = DateTime.UtcNow;
+            await _userRepository.UpdateAsync(user);
+
+            return Ok(new { message = "Password changed successfully" });
         }
 
         [HttpGet("{id}")]
