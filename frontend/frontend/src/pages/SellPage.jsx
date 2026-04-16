@@ -84,7 +84,7 @@ const SellPage = () => {
             <div className="form-group">
               <label>Фото товара</label>
               <ImageUpload onImagesChange={handleImagesChange} currentImages={formData.images} />
-              <p className="hint">Добавьте до 5 фотографий для лучшего представления</p>
+              <p className="hint">Добавьте фото для лучшего представления</p>
             </div>
 
             <div className="form-row">

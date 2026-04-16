@@ -49,8 +49,7 @@ const AddProductModal = ({ onClose, onSave, loading }) => {
       description: formData.description.trim(),
       price: price,
       quantity: quantity,
-      imageUrl: formData.images[0] || null,
-      images: formData.images
+      imageUrl: formData.imageUrl || null
     });
 
     if (result && !result.success) {

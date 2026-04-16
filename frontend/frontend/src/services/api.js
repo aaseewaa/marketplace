@@ -2,7 +2,7 @@ import axios from 'axios';
 import { mockAuthAPI, mockProductsAPI } from './mockApi';
 
 const STATIC_BASE_URL = 'https://localhost:7202';
-const USE_MOCK = false;
+const USE_MOCK = true;
 
 const api = axios.create({
   baseURL: 'https://localhost:7202/api',

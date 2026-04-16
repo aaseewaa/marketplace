@@ -26,7 +26,6 @@ const ProductPage = () => {
   const [deleting, setDeleting] = useState(false);
   const [saving, setSaving] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(0);
 
   useEffect(() => {
     fetchProduct();
@@ -135,20 +134,16 @@ const ProductPage = () => {
     return new Intl.NumberFormat('ru-RU').format(price);
   };
 
-  const getImagesList = () => {
-    console.log(product);
-    
-
-    if (product?.images && product.images.length > 0) {
-      return product.images;
-    }
+  const getImageUrl = () => {
     if (product?.imageUrl) {
-      return [product.imageUrl];
+      let url = product.imageUrl;
+      if (url.startsWith('http://') || url.startsWith('https://')) {
+        return url;
+      }
+      return `https://${url}`;
     }
-    return [];
+    return null;
   };
-
-  const imagesList = getImagesList();
 
   if (loading) {
     return (
@@ -179,16 +174,17 @@ const ProductPage = () => {
   }
 
   const isOwner = user && product.ownerId === user.id;
-
+  const imageUrl = product?.imageUrl || null;
+  
   return (
     <div className="product-page">
       <div className="container">
         <div className="product-layout">
           <div className="product-gallery">
             <div className="product-main-image">
-              {imagesList.length > 0 && imagesList[selectedImage] ? (
+              {imageUrl ? (
                 <img 
-                  src={imagesList[selectedImage]} 
+                  src={imageUrl} 
                   alt={product.name} 
                   className="product-main-img"
                   onError={(e) => {
@@ -200,20 +196,6 @@ const ProductPage = () => {
                 <div className="image-placeholder-large"></div>
               )}
             </div>
-            
-            {imagesList.length > 1 && (
-              <div className="gallery-thumbnails">
-                {imagesList.map((img, index) => (
-                  <div
-                    key={index}
-                    className={`thumbnail ${selectedImage === index ? 'active' : ''}`}
-                    onClick={() => setSelectedImage(index)}
-                  >
-                    <img src={img} alt={`${product.name} ${index + 1}`} />
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
 
           <div className="product-info-section">

@@ -22,6 +22,8 @@ const EditProductModal = ({ product, onClose, onSave, loading }) => {
   });
   const [error, setError] = useState('');
 
+  const [imageUrl, setImageUrl] = useState(product?.imageUrl || '');
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -59,8 +61,7 @@ const EditProductModal = ({ product, onClose, onSave, loading }) => {
       description: formData.description.trim(),
       price: price,
       quantity: quantity,
-      imageUrl: formData.images[0] || null,
-      images: formData.images
+      imageUrl: imageUrl
     });
 
     if (result && !result.success) {
