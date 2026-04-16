@@ -97,6 +97,8 @@ builder.Services.AddCors((options) =>
 
 var app = builder.Build();
 
+app.UseStaticFiles();
+
 app.UseCors("AllowAll");
 
 // Configure the HTTP request pipeline.
