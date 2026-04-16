@@ -58,7 +58,7 @@ const Returns = () => {
       <div className="return-form-modal">
         <div className="return-form-content">
           <h3>Возврат товара</h3>
-          <p className="return-product">{item.product_name}</p>
+          <p className="return-product">{item.productName}</p>
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label>Причина возврата</label>
@@ -114,16 +114,16 @@ const Returns = () => {
                 <div className="return-order-header">
                   <span className="return-order-number">Заказ №{order.id}</span>
                   <span className="return-order-date">
-                    {new Date(order.completed_at).toLocaleDateString('ru-RU')}
+                    {new Date(order.completedAt).toLocaleDateString('ru-RU')}
                   </span>
                 </div>
                 <div className="return-order-items">
                   {order.items.map(item => (
                     <div key={item.id} className="return-order-item">
                       <div className="return-item-info">
-                        <span className="return-item-name">{item.product_name}</span>
+                        <span className="return-item-name">{item.productName}</span>
                         <span className="return-item-price">
-                          {item.price_at_order} ₽ × {item.quantity}
+                          {item.priceAtOrder} ₽ × {item.quantity}
                         </span>
                       </div>
                       <button

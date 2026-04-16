@@ -3,7 +3,7 @@ import './Modal.css';
 
 const EditProfileModal = ({ user, onClose, onSave, loading }) => {
   const [formData, setFormData] = useState({
-    full_name: user?.full_name || '',
+    fullName : user?.fullName  || '',
     username: user?.username || '',
     email: user?.email || '',
   });
@@ -51,8 +51,8 @@ const EditProfileModal = ({ user, onClose, onSave, loading }) => {
             <label>Полное имя</label>
             <input
               type="text"
-              name="full_name"
-              value={formData.full_name}
+              name="fullName "
+              value={formData.fullName }
               onChange={handleChange}
               className="filter-input"
               placeholder="Иван Иванов"

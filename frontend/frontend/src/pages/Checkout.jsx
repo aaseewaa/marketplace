@@ -32,7 +32,7 @@ const Checkout = () => {
       setCart(cartRes.data);
       setAddresses(addressesRes.data);
       
-      const defaultAddress = addressesRes.data.find(a => a.is_default);
+      const defaultAddress = addressesRes.data.find(a => a.isDefault);
       if (defaultAddress) {
         setSelectedAddressId(defaultAddress.id);
       } else if (addressesRes.data.length > 0) {
@@ -58,7 +58,7 @@ const Checkout = () => {
         setAddresses(prev => [...prev, response.data]);
       }
       
-      if (addressData.is_default || (!editingAddress && addresses.length === 0)) {
+      if (addressData.isDefault || (!editingAddress && addresses.length === 0)) {
         setSelectedAddressId(response.data.id);
       }
       
@@ -109,7 +109,7 @@ const Checkout = () => {
     setSubmitting(true);
     try {
       const orderItems = cart.items.map(item => ({
-        product_id: item.product_id,
+        productId: item.productId,
         quantity: item.quantity
       }));
       
@@ -204,10 +204,10 @@ const Checkout = () => {
                         <div className={`radio ${selectedAddressId === address.id ? 'checked' : ''}`}></div>
                       </div>
                       <div className="address-details">
-                        <p className="address-line">{address.address_line}</p>
-                        <p className="address-city">{address.city}, {address.postal_code}</p>
+                        <p className="address-line">{address.addressLine}</p>
+                        <p className="address-city">{address.city}, {address.postalCode}</p>
                         <p className="address-country">{address.country}</p>
-                        {address.is_default && <span className="default-badge">По умолчанию</span>}
+                        {address.isDefault && <span className="default-badge">По умолчанию</span>}
                       </div>
                       <div className="address-actions">
                         <button 

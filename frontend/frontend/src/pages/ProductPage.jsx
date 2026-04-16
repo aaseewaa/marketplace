@@ -77,7 +77,7 @@ const ProductPage = () => {
       setAddingToCart(false);
     }
 
-    if (product.owner_id === user?.id) {
+    if (product.ownerId === user?.id) {
       showError('Вы не можете купить свой собственный товар');
       return;
     }
@@ -188,7 +188,7 @@ const ProductPage = () => {
     );
   }
 
-  const isOwner = user && product.owner_id === user.id;
+  const isOwner = user && product.ownerId === user.id;
 
   return (
     <div className="product-page">
@@ -240,7 +240,7 @@ const ProductPage = () => {
             
             <div className="product-seller-section">
               <p className="product-seller-info">
-                Продавец: {product.owner_username}
+                Продавец: {product.ownerUsername}
               </p>
             </div>
 
@@ -373,7 +373,7 @@ const ProductPage = () => {
                       {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
                     </span>
                     <span className="review-date">
-                      {new Date(review.created_at).toLocaleDateString('ru-RU')}
+                      {new Date(review.createdAt).toLocaleDateString('ru-RU')}
                     </span>
                   </div>
                   <p className="review-comment">{review.comment}</p>

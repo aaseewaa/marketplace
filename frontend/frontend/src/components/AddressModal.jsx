@@ -3,11 +3,11 @@ import './Modal.css';
 
 const AddressModal = ({ address, onClose, onSave, loading }) => {
   const [formData, setFormData] = useState({
-    address_line: address?.address_line || '',
+    addressLine: address?.addressLine || '',
     city: address?.city || '',
-    postal_code: address?.postal_code || '',
+    postalCode: address?.postalCode || '',
     country: address?.country || 'Россия',
-    is_default: address?.is_default || false
+    isDefault: address?.isDefault || false
   });
   const [error, setError] = useState('');
 
@@ -23,7 +23,7 @@ const AddressModal = ({ address, onClose, onSave, loading }) => {
     e.preventDefault();
     setError('');
 
-    if (!formData.address_line.trim()) {
+    if (!formData.addressLine.trim()) {
       setError('Введите адрес');
       return;
     }
@@ -53,8 +53,8 @@ const AddressModal = ({ address, onClose, onSave, loading }) => {
             <label>Адрес *</label>
             <input
               type="text"
-              name="address_line"
-              value={formData.address_line}
+              name="addressLine"
+              value={formData.addressLine}
               onChange={handleChange}
               required
               className="filter-input"
@@ -78,8 +78,8 @@ const AddressModal = ({ address, onClose, onSave, loading }) => {
             <label>Почтовый индекс</label>
             <input
               type="text"
-              name="postal_code"
-              value={formData.postal_code}
+              name="postalCode"
+              value={formData.postalCode}
               onChange={handleChange}
               className="filter-input"
             />
@@ -100,8 +100,8 @@ const AddressModal = ({ address, onClose, onSave, loading }) => {
             <label>
               <input
                 type="checkbox"
-                name="is_default"
-                checked={formData.is_default}
+                name="isDefault"
+                checked={formData.isDefault}
                 onChange={handleChange}
               />
               Использовать как адрес по умолчанию

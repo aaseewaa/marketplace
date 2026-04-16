@@ -6,8 +6,6 @@ const STORAGE_KEYS = {
   CART: 'mock_cart',
   ADDRESSES: 'mock_addresses',
   ORDERS: 'mock_orders',
-  WISHLIST: 'mock_wishlist',
-  MESSAGES: 'mock_messages'
 };
 
 const loadFromStorage = (key, defaultValue) => {
@@ -28,24 +26,24 @@ let mockUsers = loadFromStorage(STORAGE_KEYS.USERS, [
     email: 'user@example.com',
     username: 'ivan123',
     password: '12345678',
-    full_name: 'Иван Иванов',
-    created_at: '2026-04-07T12:00:00Z'
+    fullName: 'Иван Иванов',
+    createdAt: '2026-04-07T12:00:00Z'
   },
   {
     id: 2,
     email: 'maria@example.com',
     username: 'maria88',
     password: '12345678',
-    full_name: 'Мария Петрова',
-    created_at: '2026-04-07T13:00:00Z'
+    fullName: 'Мария Петрова',
+    createdAt: '2026-04-07T13:00:00Z'
   }
 ]);
 
 let mockProducts = loadFromStorage(STORAGE_KEYS.PRODUCTS, [
   {
     id: 1,
-    owner_id: 1,
-    owner_username: 'ivan123',
+    ownerId: 1,
+    ownerUsername: 'ivan123',
     name: 'Ноутбук Lenovo Legion 5',
     description: 'Игровой ноутбук с процессором Intel Core i7, 16GB RAM, 512GB SSD, видеокарта RTX 3060',
     price: 85000,
@@ -55,13 +53,13 @@ let mockProducts = loadFromStorage(STORAGE_KEYS.PRODUCTS, [
       'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400',
       'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400'
     ],
-    created_at: '2026-04-07T12:00:00Z',
-    updated_at: '2026-04-07T12:00:00Z'
+    createdAt: '2026-04-07T12:00:00Z',
+    updatedAt: '2026-04-07T12:00:00Z'
   },
   {
     id: 2,
-    owner_id: 1,
-    owner_username: 'ivan123',
+    ownerId: 1,
+    ownerUsername: 'ivan123',
     name: 'Смартфон Apple iPhone 14',
     description: '128GB, черный, отличное состояние',
     price: 75000,
@@ -71,13 +69,13 @@ let mockProducts = loadFromStorage(STORAGE_KEYS.PRODUCTS, [
       'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400',
       'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400'
     ],
-    created_at: '2026-04-07T12:30:00Z',
-    updated_at: '2026-04-07T12:30:00Z'
+    createdAt: '2026-04-07T12:30:00Z',
+    updatedAt: '2026-04-07T12:30:00Z'
   },
   {
     id: 3,
-    owner_id: 2,
-    owner_username: 'maria88',
+    ownerId: 2,
+    ownerUsername: 'maria88',
     name: 'Наушники Sony WH-1000XM4',
     description: 'Беспроводные наушники с шумоподавлением',
     price: 25000,
@@ -87,235 +85,213 @@ let mockProducts = loadFromStorage(STORAGE_KEYS.PRODUCTS, [
       'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400',
       'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400'
     ],
-    created_at: '2026-04-07T13:00:00Z',
-    updated_at: '2026-04-07T13:00:00Z'
+    createdAt: '2026-04-07T13:00:00Z',
+    updatedAt: '2026-04-07T13:00:00Z'
   },
   {
     id: 4,
-    owner_id: 2,
-    owner_username: 'maria88',
+    ownerId: 2,
+    ownerUsername: 'maria88',
     name: 'Клавиатура Logitech MX Keys',
     description: 'Беспроводная клавиатура для программистов',
     price: 12000,
     quantity: 0,
     image: null,
-    created_at: '2026-04-07T13:30:00Z',
-    updated_at: '2026-04-07T13:30:00Z'
+    createdAt: '2026-04-07T13:30:00Z',
+    updatedAt: '2026-04-07T13:30:00Z'
   },
   {
     id: 5,
-    owner_id: 1,
-    owner_username: 'ivan123',
+    ownerId: 1,
+    ownerUsername: 'ivan123',
     name: 'Монитор Dell UltraSharp 27',
     description: '27 дюймов, 4K, IPS матрица',
     price: 45000,
     quantity: 2,
     image: null,
-    created_at: '2026-04-07T14:00:00Z',
-    updated_at: '2026-04-07T14:00:00Z'
+    createdAt: '2026-04-07T14:00:00Z',
+    updatedAt: '2026-04-07T14:00:00Z'
   },
   {
     id: 6,
-    owner_id: 2,
-    owner_username: 'maria88',
+    ownerId: 2,
+    ownerUsername: 'maria88',
     name: 'Мышь Logitech MX Master 3',
     description: 'Беспроводная мышь для профессиональной работы',
     price: 8000,
     quantity: 6,
     image: null,
-    created_at: '2026-04-07T14:30:00Z',
-    updated_at: '2026-04-07T14:30:00Z'
+    createdAt: '2026-04-07T14:30:00Z',
+    updatedAt: '2026-04-07T14:30:00Z'
   },
   {
     id: 7,
-    owner_id: 1,
-    owner_username: 'ivan123',
+    ownerId: 1,
+    ownerUsername: 'ivan123',
     name: 'Внешний SSD Samsung T7 1TB',
     description: 'Портативный твердотельный накопитель',
     price: 12000,
     quantity: 4,
     image: null,
-    created_at: '2026-04-07T15:00:00Z',
-    updated_at: '2026-04-07T15:00:00Z'
+    createdAt: '2026-04-07T15:00:00Z',
+    updatedAt: '2026-04-07T15:00:00Z'
   },
   {
     id: 8,
-    owner_id: 2,
-    owner_username: 'maria88',
+    ownerId: 2,
+    ownerUsername: 'maria88',
     name: 'Фитнес-браслет Xiaomi Mi Band 7',
     description: 'Новый, в упаковке',
     price: 3500,
     quantity: 10,
     image: null,
-    created_at: '2026-04-07T15:30:00Z',
-    updated_at: '2026-04-07T15:30:00Z'
+    createdAt: '2026-04-07T15:30:00Z',
+    updatedAt: '2026-04-07T15:30:00Z'
   },
   {
   id: 9,
-  owner_id: 1,
-  owner_username: 'ivan123',
+  ownerId: 1,
+  ownerUsername: 'ivan123',
   name: 'Премиум кожаная куртка',
   description: 'Натуральная кожа, итальянское производство',
   price: 25000,
   quantity: 3,
   images: ['https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400'],
-  created_at: '2026-04-10T12:00:00Z',
-  updated_at: '2026-04-10T12:00:00Z'
+  createdAt: '2026-04-10T12:00:00Z',
+  updatedAt: '2026-04-10T12:00:00Z'
   },
   {
     id: 10,
-    owner_id: 2,
-    owner_username: 'maria88',
+    ownerId: 2,
+    ownerUsername: 'maria88',
     name: 'Летние кроссовки Nike',
     description: 'Легкие, дышащие, идеально для лета',
     price: 8900,
     quantity: 10,
     images: ['https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400'],
-    created_at: '2026-04-11T12:00:00Z',
-    updated_at: '2026-04-11T12:00:00Z'
+    createdAt: '2026-04-11T12:00:00Z',
+    updatedAt: '2026-04-11T12:00:00Z'
   },
   {
     id: 11,
-    owner_id: 1,
-    owner_username: 'ivan123',
+    ownerId: 1,
+    ownerUsername: 'ivan123',
     name: 'Уличная толстовка',
     description: 'Хлопок, оверсайз, принт',
     price: 4500,
     quantity: 15,
     images: ['https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400'],
-    created_at: '2026-04-12T12:00:00Z',
-    updated_at: '2026-04-12T12:00:00Z'
+    createdAt: '2026-04-12T12:00:00Z',
+    updatedAt: '2026-04-12T12:00:00Z'
   },
   {
     id: 12,
-    owner_id: 2,
-    owner_username: 'maria88',
+    ownerId: 2,
+    ownerUsername: 'maria88',
     name: 'Беспроводные наушники',
     description: 'Шумоподавление, 20 часов работы',
     price: 12000,
     quantity: 7,
     images: ['https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=400'],
-    created_at: '2026-04-13T12:00:00Z',
-    updated_at: '2026-04-13T12:00:00Z'
+    createdAt: '2026-04-13T12:00:00Z',
+    updatedAt: '2026-04-13T12:00:00Z'
   }
 ]);
 
 let mockReviews = loadFromStorage(STORAGE_KEYS.REVIEWS, [
   {
     id: 1,
-    product_id: 1,
-    user_id: 2,
+    productId: 1,
+    userId: 2,
     username: 'maria88',
     rating: 5,
     comment: 'Отличный ноутбук, очень довольна покупкой!',
-    created_at: '2026-04-08T10:00:00Z',
-    updated_at: '2026-04-08T10:00:00Z'
+    createdAt: '2026-04-08T10:00:00Z',
+    updatedAt: '2026-04-08T10:00:00Z'
   },
   {
     id: 2,
-    product_id: 1,
-    user_id: 1,
+    productId: 1,
+    userId: 1,
     username: 'ivan123',
     rating: 4,
     comment: 'Хороший ноут, но немного шумный под нагрузкой',
-    created_at: '2026-04-08T11:00:00Z',
-    updated_at: '2026-04-08T11:00:00Z'
+    createdAt: '2026-04-08T11:00:00Z',
+    updatedAt: '2026-04-08T11:00:00Z'
   },
   {
     id: 3,
-    product_id: 3,
-    user_id: 1,
+    productId: 3,
+    userId: 1,
     username: 'ivan123',
     rating: 5,
     comment: 'Лучшие наушники за эти деньги',
-    created_at: '2026-04-08T12:00:00Z',
-    updated_at: '2026-04-08T12:00:00Z'
+    createdAt: '2026-04-08T12:00:00Z',
+    updatedAt: '2026-04-08T12:00:00Z'
   }
 ]);
 
 let deliveryAddresses = loadFromStorage(STORAGE_KEYS.ADDRESSES, [
   {
     id: 1,
-    user_id: 1,
-    address_line: 'ул. Ленина, д. 10, кв. 25',
+    userId: 1,
+    addressLine: 'ул. Ленина, д. 10, кв. 25',
     city: 'Москва',
-    postal_code: '101000',
+    postalCode: '101000',
     country: 'Россия',
-    is_default: true,
-    created_at: '2026-04-07T12:00:00Z'
+    isDefault: true,
+    createdAt: '2026-04-07T12:00:00Z'
   },
   {
     id: 2,
-    user_id: 2,
-    address_line: 'пр. Невский, д. 15, кв. 8',
+    userId: 2,
+    addressLine: 'пр. Невский, д. 15, кв. 8',
     city: 'Санкт-Петербург',
-    postal_code: '191186',
+    postalCode: '191186',
     country: 'Россия',
-    is_default: true,
-    created_at: '2026-04-07T13:00:00Z'
+    isDefault: true,
+    createdAt: '2026-04-07T13:00:00Z'
   }
 ]);
 
 let mockOrders = loadFromStorage(STORAGE_KEYS.ORDERS, [
   {
     id: 1,
-    buyer_id: 1,
-    delivery_address_id: 1,
+    buyerId: 1,
+    deliveryAddressId: 1,
     status: 'completed',
-    total_amount: 25000,
-    created_at: '2026-04-08T10:00:00Z',
-    completed_at: '2026-04-08T14:00:00Z',
-    cancelled_at: null,
+    totalAmount: 25000,
+    createdAt: '2026-04-08T10:00:00Z',
+    completedAt: '2026-04-08T14:00:00Z',
+    cancelledAt: null,
     items: [
       {
         id: 101,
-        product_id: 3,
-        product_name: 'Наушники Sony WH-1000XM4',
+        productId: 3,
+        productName: 'Наушники Sony WH-1000XM4',
         quantity: 1,
-        price_at_order: 25000
+        priceAtOrder: 25000
       }
     ]
   },
   {
     id: 2,
-    buyer_id: 2,
-    delivery_address_id: 2,
+    buyerId: 2,
+    deliveryAddressId: 2,
     status: 'created',
-    total_amount: 85000,
-    created_at: '2026-04-09T10:00:00Z',
-    completed_at: null,
-    cancelled_at: null,
+    totalAmount: 85000,
+    createdAt: '2026-04-09T10:00:00Z',
+    completedAt: null,
+    cancelledAt: null,
     items: [
       {
         id: 201,
-        product_id: 1,
-        product_name: 'Ноутбук Lenovo Legion 5',
+        productId: 1,
+        productName: 'Ноутбук Lenovo Legion 5',
         quantity: 1,
-        price_at_order: 85000
+        priceAtOrder: 85000
       }
     ]
-  }
-]);
-
-let wishlist = loadFromStorage(STORAGE_KEYS.WISHLIST, {});
-let messages = loadFromStorage(STORAGE_KEYS.MESSAGES, [
-  {
-    id: 1,
-    from_user_id: 1,
-    from_username: 'ivan123',
-    to_user_id: 2,
-    message: 'Здравствуйте! Наушники еще в наличии?',
-    is_read: true,
-    created_at: new Date(Date.now() - 86400000).toISOString()
-  },
-  {
-    id: 2,
-    from_user_id: 2,
-    from_username: 'maria88',
-    to_user_id: 1,
-    message: 'Да, в наличии. Можете оформить заказ',
-    is_read: true,
-    created_at: new Date(Date.now() - 82800000).toISOString()
   }
 ]);
 
@@ -330,36 +306,11 @@ const saveAllData = () => {
   saveToStorage(STORAGE_KEYS.CART, cart);
   saveToStorage(STORAGE_KEYS.ADDRESSES, deliveryAddresses);
   saveToStorage(STORAGE_KEYS.ORDERS, mockOrders);
-  saveToStorage(STORAGE_KEYS.WISHLIST, wishlist);
-  saveToStorage(STORAGE_KEYS.MESSAGES, messages);
 };
 
 const generateToken = (user) => {
   return btoa(`${user.id}:${Date.now()}`);
 };
-
-export const getMessagesPolling = (otherUserId, lastMessageId) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      if (!currentUser) {
-        resolve({ data: [] });
-        return;
-      }
-
-      const chatMessages = messages.filter(m => 
-        (m.from_user_id === currentUser.id && m.to_user_id === Number(otherUserId)) ||
-        (m.from_user_id === Number(otherUserId) && m.to_user_id === currentUser.id)
-      ).sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-
-      const newMessages = lastMessageId 
-        ? chatMessages.filter(m => m.id > lastMessageId)
-        : chatMessages;
-
-      resolve({ data: newMessages });
-    }, 100);
-  });
-};  
-
 
 export const mockAuthAPI = {
   register: (data) => {
@@ -376,8 +327,8 @@ export const mockAuthAPI = {
           email: data.email,
           username: data.username,
           password: data.password,
-          full_name: data.full_name || '',
-          created_at: new Date().toISOString()
+          fullName: data.fullName || '',
+          createdAt: new Date().toISOString()
         };
         
         mockUsers.push(newUser);
@@ -461,14 +412,14 @@ export const mockAuthAPI = {
           ...mockUsers[userIndex],
           email: data.email,
           username: data.username,
-          full_name: data.full_name || ''
+          fullName: data.fullName || ''
         };
 
         currentUser = { ...mockUsers[userIndex] };
         
         mockProducts.forEach(p => {
-          if (p.owner_id === currentUser.id) {
-            p.owner_username = currentUser.username;
+          if (p.ownerId === currentUser.id) {
+            p.ownerUsername = currentUser.username;
           }
         });
         
@@ -516,7 +467,7 @@ export const mockAuthAPI = {
           resolve({ data: [] });
           return;
         }
-        const userAddresses = deliveryAddresses.filter(a => a.user_id === currentUser.id);
+        const userAddresses = deliveryAddresses.filter(a => a.userId === currentUser.id);
         resolve({ data: userAddresses });
       }, 200);
     });
@@ -530,23 +481,23 @@ export const mockAuthAPI = {
           return;
         }
 
-        if (data.is_default) {
+        if (data.isDefault) {
           deliveryAddresses.forEach(a => {
-            if (a.user_id === currentUser.id) {
-              a.is_default = false;
+            if (a.userId === currentUser.id) {
+              a.isDefault = false;
             }
           });
         }
 
         const newAddress = {
           id: deliveryAddresses.length + 1,
-          user_id: currentUser.id,
-          address_line: data.address_line,
+          userId: currentUser.id,
+          addressLine: data.addressLine,
           city: data.city,
-          postal_code: data.postal_code,
+          postalCode: data.postalCode,
           country: data.country || 'Россия',
-          is_default: data.is_default || false,
-          created_at: new Date().toISOString()
+          isDefault: data.isDefault || false,
+          createdAt: new Date().toISOString()
         };
 
         deliveryAddresses.push(newAddress);
@@ -564,16 +515,16 @@ export const mockAuthAPI = {
           return;
         }
 
-        const index = deliveryAddresses.findIndex(a => a.id === Number(id) && a.user_id === currentUser.id);
+        const index = deliveryAddresses.findIndex(a => a.id === Number(id) && a.userId === currentUser.id);
         if (index === -1) {
           reject({ response: { status: 404, data: { message: 'Адрес не найден' } } });
           return;
         }
 
-        if (data.is_default) {
+        if (data.isDefault) {
           deliveryAddresses.forEach(a => {
-            if (a.user_id === currentUser.id) {
-              a.is_default = false;
+            if (a.userId === currentUser.id) {
+              a.isDefault = false;
             }
           });
         }
@@ -581,7 +532,7 @@ export const mockAuthAPI = {
         deliveryAddresses[index] = {
           ...deliveryAddresses[index],
           ...data,
-          updated_at: new Date().toISOString()
+          updatedAt: new Date().toISOString()
         };
 
         saveAllData();
@@ -598,7 +549,7 @@ export const mockAuthAPI = {
           return;
         }
 
-        const index = deliveryAddresses.findIndex(a => a.id === Number(id) && a.user_id === currentUser.id);
+        const index = deliveryAddresses.findIndex(a => a.id === Number(id) && a.userId === currentUser.id);
         if (index === -1) {
           reject({ response: { status: 404, data: { message: 'Адрес не найден' } } });
           return;
@@ -640,8 +591,8 @@ export const mockProductsAPI = {
           filtered.sort((a, b) => params.order === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name));
         } else {
           filtered.sort((a, b) => params.order === 'asc' 
-            ? new Date(a.created_at) - new Date(b.created_at) 
-            : new Date(b.created_at) - new Date(a.created_at)
+            ? new Date(a.createdAt) - new Date(b.createdAt) 
+            : new Date(b.createdAt) - new Date(a.createdAt)
           );
         }
         
@@ -671,7 +622,7 @@ export const mockProductsAPI = {
           return;
         }
         
-        const myProducts = mockProducts.filter(p => p.owner_id === currentUser.id);
+        const myProducts = mockProducts.filter(p => p.ownerId === currentUser.id);
         resolve({ data: myProducts });
       }, 300);
     });
@@ -702,15 +653,15 @@ export const mockProductsAPI = {
         
         const newProduct = {
           id: mockProducts.length + 1,
-          owner_id: currentUser.id,
-          owner_username: currentUser.username,
+          ownerId: currentUser.id,
+          ownerUsername: currentUser.username,
           name: data.name,
           description: data.description || '',
           price: data.price,
           quantity: data.quantity,
           images: data.images || [],
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
         };
         
         mockProducts.push(newProduct);
@@ -730,7 +681,7 @@ export const mockProductsAPI = {
         }
         
         const product = mockProducts[index];
-        if (product.owner_id !== currentUser?.id) {
+        if (product.ownerId !== currentUser?.id) {
           reject({ response: { status: 403, data: { message: 'Вы не можете редактировать этот товар' } } });
           return;
         }
@@ -754,7 +705,7 @@ export const mockProductsAPI = {
           ...product,
           ...data,
           images: data.images || product.images || [],
-          updated_at: new Date().toISOString()
+          updatedAt: new Date().toISOString()
         };
         
         saveAllData();
@@ -773,7 +724,7 @@ export const mockProductsAPI = {
         }
         
         const product = mockProducts[index];
-        if (product.owner_id !== currentUser?.id) {
+        if (product.ownerId !== currentUser?.id) {
           reject({ response: { status: 403, data: { message: 'Вы не можете удалить этот товар' } } });
           return;
         }
@@ -788,7 +739,7 @@ export const mockProductsAPI = {
   getReviews: (productId) => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const productReviews = mockReviews.filter(r => r.product_id === Number(productId));
+        const productReviews = mockReviews.filter(r => r.productId === Number(productId));
         resolve({ data: productReviews });
       }, 200);
     });
@@ -808,20 +759,20 @@ export const mockProductsAPI = {
           return;
         }
 
-        if (product.owner_id === currentUser.id) {
+        if (product.ownerId === currentUser.id) {
           reject({ response: { data: { message: 'Вы не можете оставить отзыв на свой товар' } } });
           return;
         }
 
         const newReview = {
           id: mockReviews.length + 1,
-          product_id: Number(productId),
-          user_id: currentUser.id,
+          productId: Number(productId),
+          userId: currentUser.id,
           username: currentUser.username,
           rating: data.rating,
           comment: data.comment,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
         };
 
         mockReviews.push(newReview);
@@ -839,7 +790,7 @@ export const mockProductsAPI = {
           return;
         }
 
-        const address = deliveryAddresses.find(a => a.id === Number(addressId) && a.user_id === currentUser.id);
+        const address = deliveryAddresses.find(a => a.id === Number(addressId) && a.userId === currentUser.id);
         if (!address) {
           reject({ response: { data: { message: 'Адрес доставки не найден' } } });
           return;
@@ -849,13 +800,13 @@ export const mockProductsAPI = {
         const orderItems = [];
 
         for (const item of items) {
-          const product = mockProducts.find(p => p.id === item.product_id);
+          const product = mockProducts.find(p => p.id === item.productId);
           if (!product) {
-            reject({ response: { data: { message: `Товар с id ${item.product_id} не найден` } } });
+            reject({ response: { data: { message: `Товар с id ${item.productId} не найден` } } });
             return;
           }
 
-          if (product.owner_id === currentUser.id) {
+          if (product.ownerId === currentUser.id) {
             reject({ response: { data: { message: `Нельзя купить свой товар: ${product.name}` } } });
             return;
           }
@@ -868,10 +819,10 @@ export const mockProductsAPI = {
           totalAmount += product.price * item.quantity;
           orderItems.push({
             id: Date.now() + Math.random(),
-            product_id: product.id,
-            product_name: product.name,
+            productId: product.id,
+            productName: product.name,
             quantity: item.quantity,
-            price_at_order: product.price
+            priceAtOrder: product.price
           });
 
           const productIndex = mockProducts.findIndex(p => p.id === product.id);
@@ -880,20 +831,20 @@ export const mockProductsAPI = {
 
         const newOrder = {
           id: mockOrders.length + 1,
-          buyer_id: currentUser.id,
-          delivery_address_id: Number(addressId),
+          buyerId: currentUser.id,
+          deliveryAddressId: Number(addressId),
           status: 'created',
-          total_amount: totalAmount,
-          created_at: new Date().toISOString(),
-          completed_at: null,
-          cancelled_at: null,
+          totalAmount: totalAmount,
+          createdAt: new Date().toISOString(),
+          completedAt: null,
+          cancelledAt: null,
           items: orderItems
         };
 
         mockOrders.push(newOrder);
         
         if (cart[currentUser.id]) {
-          cart[currentUser.id] = { items: [], total_amount: 0 };
+          cart[currentUser.id] = { items: [], totalAmount: 0 };
         }
         
         saveAllData();
@@ -909,7 +860,7 @@ export const mockProductsAPI = {
           resolve({ data: [] });
           return;
         }
-        const userOrders = mockOrders.filter(o => o.buyer_id === currentUser.id);
+        const userOrders = mockOrders.filter(o => o.buyerId === currentUser.id);
         resolve({ data: userOrders });
       }, 300);
     });
@@ -922,7 +873,7 @@ export const mockProductsAPI = {
           reject({ response: { status: 401 } });
           return;
         }
-        const order = mockOrders.find(o => o.id === Number(id) && o.buyer_id === currentUser.id);
+        const order = mockOrders.find(o => o.id === Number(id) && o.buyerId === currentUser.id);
         if (!order) {
           reject({ response: { status: 404, data: { message: 'Заказ не найден' } } });
           return;
@@ -940,7 +891,7 @@ export const mockProductsAPI = {
           return;
         }
         
-        const index = mockOrders.findIndex(o => o.id === Number(id) && o.buyer_id === currentUser.id);
+        const index = mockOrders.findIndex(o => o.id === Number(id) && o.buyerId === currentUser.id);
         if (index === -1) {
           reject({ response: { status: 404, data: { message: 'Заказ не найден' } } });
           return;
@@ -948,10 +899,10 @@ export const mockProductsAPI = {
 
         mockOrders[index].status = status;
         if (status === 'completed') {
-          mockOrders[index].completed_at = new Date().toISOString();
+          mockOrders[index].completedAt = new Date().toISOString();
         }
         if (status === 'cancelled') {
-          mockOrders[index].cancelled_at = new Date().toISOString();
+          mockOrders[index].cancelledAt = new Date().toISOString();
         }
 
         saveAllData();
@@ -964,12 +915,12 @@ export const mockProductsAPI = {
     return new Promise((resolve) => {
       setTimeout(() => {
         if (!currentUser) {
-          resolve({ data: { items: [], total_amount: 0 } });
+          resolve({ data: { items: [], totalAmount: 0 } });
           return;
         }
         
         if (!cart[currentUser.id]) {
-          cart[currentUser.id] = { items: [], total_amount: 0 };
+          cart[currentUser.id] = { items: [], totalAmount: 0 };
           saveAllData();
         }
         
@@ -993,7 +944,7 @@ export const mockProductsAPI = {
           return;
         }
 
-        if (product.owner_id === currentUser.id) {
+        if (product.ownerId === currentUser.id) {
           reject({ response: { data: { message: 'Нельзя купить свой собственный товар' } } });
           return;
         }
@@ -1004,25 +955,25 @@ export const mockProductsAPI = {
         }
 
         if (!cart[currentUser.id]) {
-          cart[currentUser.id] = { items: [], total_amount: 0 };
+          cart[currentUser.id] = { items: [], totalAmount: 0 };
         }
 
-        const existingItem = cart[currentUser.id].items.find(item => item.product_id === Number(productId));
+        const existingItem = cart[currentUser.id].items.find(item => item.productId === Number(productId));
         
         if (existingItem) {
           existingItem.quantity += quantity;
         } else {
           cart[currentUser.id].items.push({
             id: Date.now(),
-            product_id: product.id,
-            product_name: product.name,
+            productId: product.id,
+            productName: product.name,
             price: product.price,
             quantity: quantity,
-            added_at: new Date().toISOString()
+            addedAt: new Date().toISOString()
           });
         }
 
-        cart[currentUser.id].total_amount = cart[currentUser.id].items.reduce(
+        cart[currentUser.id].totalAmount = cart[currentUser.id].items.reduce(
           (sum, item) => sum + (item.price * item.quantity), 0
         );
 
@@ -1051,7 +1002,7 @@ export const mockProductsAPI = {
           return;
         }
 
-        const product = mockProducts.find(p => p.id === cart[currentUser.id].items[itemIndex].product_id);
+        const product = mockProducts.find(p => p.id === cart[currentUser.id].items[itemIndex].productId);
         if (product && quantity > product.quantity) {
           reject({ response: { data: { message: 'Недостаточно товара на складе' } } });
           return;
@@ -1063,7 +1014,7 @@ export const mockProductsAPI = {
           cart[currentUser.id].items[itemIndex].quantity = quantity;
         }
 
-        cart[currentUser.id].total_amount = cart[currentUser.id].items.reduce(
+        cart[currentUser.id].totalAmount = cart[currentUser.id].items.reduce(
           (sum, item) => sum + (item.price * item.quantity), 0
         );
 
@@ -1093,7 +1044,7 @@ export const mockProductsAPI = {
         }
 
         cart[currentUser.id].items.splice(itemIndex, 1);
-        cart[currentUser.id].total_amount = cart[currentUser.id].items.reduce(
+        cart[currentUser.id].totalAmount = cart[currentUser.id].items.reduce(
           (sum, item) => sum + (item.price * item.quantity), 0
         );
 
@@ -1107,111 +1058,11 @@ export const mockProductsAPI = {
     return new Promise((resolve) => {
       setTimeout(() => {
         if (currentUser) {
-          cart[currentUser.id] = { items: [], total_amount: 0 };
+          cart[currentUser.id] = { items: [], totalAmount: 0 };
           saveAllData();
         }
         resolve({ data: { message: 'Корзина очищена' } });
       }, 500);
-    });
-  },
-
-  addToWishlist: (productId) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (!currentUser) {
-          reject({ response: { status: 401, data: { message: 'Необходимо войти в систему' } } });
-          return;
-        }
-
-        if (!wishlist[currentUser.id]) {
-          wishlist[currentUser.id] = [];
-        }
-
-        if (!wishlist[currentUser.id].includes(Number(productId))) {
-          wishlist[currentUser.id].push(Number(productId));
-          saveAllData();
-        }
-
-        resolve({ data: { message: 'Товар добавлен в избранное' } });
-      }, 200);
-    });
-  },
-
-  removeFromWishlist: (productId) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (!currentUser) {
-          reject({ response: { status: 401 } });
-          return;
-        }
-
-        if (wishlist[currentUser.id]) {
-          wishlist[currentUser.id] = wishlist[currentUser.id].filter(id => id !== Number(productId));
-          saveAllData();
-        }
-
-        resolve({ data: { message: 'Товар удален из избранного' } });
-      }, 200);
-    });
-  },
-
-  getWishlist: () => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        if (!currentUser) {
-          resolve({ data: [] });
-          return;
-        }
-
-        const userWishlist = wishlist[currentUser.id] || [];
-        const wishlistProducts = mockProducts.filter(p => userWishlist.includes(p.id));
-        resolve({ data: wishlistProducts });
-      }, 200);
-    });
-  },
-
-  isInWishlist: (productId) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        if (!currentUser) {
-          resolve({ data: false });
-          return;
-        }
-        const userWishlist = wishlist[currentUser.id] || [];
-        resolve({ data: userWishlist.includes(Number(productId)) });
-      }, 100);
-    });
-  },
-
-  getConversations: () => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        if (!currentUser) {
-          resolve({ data: [] });
-          return;
-        }
-
-        const userMessages = messages.filter(m => 
-          m.from_user_id === currentUser.id || m.to_user_id === currentUser.id
-        );
-
-        const conversationMap = new Map();
-        userMessages.forEach(msg => {
-          const otherId = msg.from_user_id === currentUser.id ? msg.to_user_id : msg.from_user_id;
-          if (!conversationMap.has(otherId)) {
-            const otherUser = mockUsers.find(u => u.id === otherId);
-            conversationMap.set(otherId, {
-              user_id: otherId,
-              username: otherUser?.username,
-              last_message: msg.message,
-              last_message_time: msg.created_at,
-              unread: !msg.is_read && msg.to_user_id === currentUser.id
-            });
-          }
-        });
-
-        resolve({ data: Array.from(conversationMap.values()) });
-      }, 200);
     });
   },
 
@@ -1223,7 +1074,7 @@ export const mockProductsAPI = {
           return;
         }
 
-        const order = mockOrders.find(o => o.id === Number(orderId) && o.buyer_id === currentUser.id);
+        const order = mockOrders.find(o => o.id === Number(orderId) && o.buyerId === currentUser.id);
         if (!order) {
           reject({ response: { data: { message: 'Заказ не найден' } } });
           return;

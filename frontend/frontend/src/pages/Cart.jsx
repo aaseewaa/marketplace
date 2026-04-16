@@ -27,8 +27,8 @@ const Cart = () => {
         const quantities = {};
         for (const item of response.data.items) {
           try {
-            const productRes = await productsAPI.getById(item.product_id);
-            quantities[item.product_id] = productRes.data.quantity;
+            const productRes = await productsAPI.getById(item.productId);
+            quantities[item.productId] = productRes.data.quantity;
           } catch (err) {
             console.error('Ошибка загрузки товара:', err);
           }
@@ -69,7 +69,7 @@ const Cart = () => {
           return item;
         });
         const newTotal = updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        return { ...prevCart, items: updatedItems, total_amount: newTotal };
+        return { ...prevCart, items: updatedItems, totalAmount: newTotal };
       });
       
       window.dispatchEvent(new Event('cartUpdated'));
@@ -90,7 +90,7 @@ const Cart = () => {
         if (!prevCart) return prevCart;
         const updatedItems = prevCart.items.filter(item => item.id !== itemId);
         const newTotal = updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        return { ...prevCart, items: updatedItems, total_amount: newTotal };
+        return { ...prevCart, items: updatedItems, totalAmount: newTotal };
       });
       
       window.dispatchEvent(new Event('cartUpdated'));
@@ -111,7 +111,7 @@ const Cart = () => {
     setUpdatingItemId('clear');
     try {
       await cartAPI.clearCart();
-      setCart({ items: [], total_amount: 0 });
+      setCart({ items: [], totalAmount: 0 });
       
       window.dispatchEvent(new Event('cartUpdated'));
       success('Корзина очищена');
@@ -159,7 +159,7 @@ const Cart = () => {
   }
 
   const cartItems = cart?.items || [];
-  const totalAmount = cart?.total_amount || 0;
+  const totalAmount = cart?.totalAmount || 0;
 
   if (cartItems.length === 0) {
     return (
@@ -193,7 +193,7 @@ const Cart = () => {
           <div className="cart-items">
             {cartItems.map((item) => {
               const isUpdating = updatingItemId === item.id;
-              const maxQuantity = productQuantities[item.product_id] || 0;
+              const maxQuantity = productQuantities[item.productId] || 0;
               const isMaxQuantity = item.quantity >= maxQuantity;
               const isMinQuantity = item.quantity <= 1;
               
@@ -203,7 +203,7 @@ const Cart = () => {
                     <div className="image-placeholder-small"></div>
                   </div>
                   <div className="cart-item-info">
-                    <h3 className="cart-item-title">{item.product_name}</h3>
+                    <h3 className="cart-item-title">{item.productName}</h3>
                     <p className="cart-item-price">{formatPrice(item.price)} ₽</p>
                     {maxQuantity > 0 && (
                       <p className="cart-item-stock">Доступно: {maxQuantity} шт.</p>
@@ -211,7 +211,7 @@ const Cart = () => {
                   </div>
                   <div className="cart-item-quantity">
                     <button
-                      onClick={() => handleUpdateQuantity(item.id, item.product_id, item.quantity, -1)}
+                      onClick={() => handleUpdateQuantity(item.id, item.productId, item.quantity, -1)}
                       disabled={isUpdating || isMinQuantity}
                       className="quantity-btn"
                     >
@@ -221,7 +221,7 @@ const Cart = () => {
                       {isUpdating ? '...' : item.quantity}
                     </span>
                     <button
-                      onClick={() => handleUpdateQuantity(item.id, item.product_id, item.quantity, 1)}
+                      onClick={() => handleUpdateQuantity(item.id, item.productId, item.quantity, 1)}
                       disabled={isUpdating || isMaxQuantity}
                       className="quantity-btn"
                     >

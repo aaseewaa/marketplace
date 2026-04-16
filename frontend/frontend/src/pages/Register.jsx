@@ -8,7 +8,7 @@ const Register = () => {
     email: '',
     username: '',
     password: '',
-    full_name: '',
+    fullName: '',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -91,8 +91,8 @@ const Register = () => {
             <label>Полное имя</label>
             <input
               type="text"
-              name="full_name"
-              value={formData.full_name}
+              name="fullName"
+              value={formData.fullName}
               onChange={handleChange}
               placeholder="Иван Иванов"
             />

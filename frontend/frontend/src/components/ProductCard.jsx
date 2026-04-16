@@ -43,7 +43,7 @@ const ProductCard = ({ product }) => {
         <div className="product-info">
           <h3 className="product-title">{product.name}</h3>
           <p className="product-price">{formatPrice(product.price)} ₽</p>
-          <p className="product-seller">{product.owner_username}</p>
+          <p className="product-seller">{product.ownerUsername}</p>
           {product.quantity > 0 && product.quantity < 5 && (
             <p className="product-stock-low">Осталось {product.quantity} шт.</p>
           )}

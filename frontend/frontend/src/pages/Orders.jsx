@@ -91,7 +91,7 @@ const Orders = () => {
                 <div className="order-header">
                   <div className="order-info">
                     <span className="order-number">Заказ №{order.id}</span>
-                    <span className="order-date">{formatDate(order.created_at)}</span>
+                    <span className="order-date">{formatDate(order.createdAt)}</span>
                   </div>
                   <div className={`order-status ${getStatusClass(order.status)}`}>
                     {getStatusText(order.status)}
@@ -105,15 +105,15 @@ const Orders = () => {
                         <div className="image-placeholder-small"></div>
                       </div>
                       <div className="order-item-details">
-                        <Link to={`/product/${item.product_id}`} className="order-item-name">
-                          {item.product_name}
+                        <Link to={`/product/${item.productId}`} className="order-item-name">
+                          {item.productName}
                         </Link>
                         <div className="order-item-meta">
-                          {formatPrice(item.price_at_order)} ₽ × {item.quantity}
+                          {formatPrice(item.priceAtOrder)} ₽ × {item.quantity}
                         </div>
                       </div>
                       <div className="order-item-price">
-                        {formatPrice(item.price_at_order * item.quantity)} ₽
+                        {formatPrice(item.priceAtOrder * item.quantity)} ₽
                       </div>
                     </div>
                   ))}
@@ -122,7 +122,7 @@ const Orders = () => {
                 <div className="order-footer">
                   <div className="order-total">
                     <span>Итого:</span>
-                    <strong>{formatPrice(order.total_amount)} ₽</strong>
+                    <strong>{formatPrice(order.totalAmount)} ₽</strong>
                   </div>
                   <Link to={`/orders/${order.id}`} className="order-details-link">
                     Подробнее

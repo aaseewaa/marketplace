@@ -50,10 +50,6 @@ if (USE_MOCK) {
     getMyOrders: mockProductsAPI.getMyOrders,
     getOrderById: mockProductsAPI.getOrderById,
     updateOrderStatus: mockProductsAPI.updateOrderStatus,
-    addToWishlist: mockProductsAPI.addToWishlist,
-    removeFromWishlist: mockProductsAPI.removeFromWishlist,
-    getWishlist: mockProductsAPI.getWishlist,
-    isInWishlist: mockProductsAPI.isInWishlist,
     requestReturn: mockProductsAPI.requestReturn,
     getUserById: mockProductsAPI.getUserById,
   };
@@ -99,18 +95,11 @@ if (USE_MOCK) {
     create: (data) => api.post('/products', data),
     update: (id, data) => api.put(`/products/${id}`, data),
     delete: (id) => api.delete(`/products/${id}`),
-    createOrder: (addressId, items) => api.post('/orders', { delivery_address_id: addressId, items }),
+    createOrder: (addressId, items) => api.post('/orders', { deliveryAddressId: addressId, items }),
     getMyOrders: () => api.get('/orders/my'),
     getOrderById: (id) => api.get(`/orders/${id}`),
     updateOrderStatus: (id, status) => api.patch(`/orders/${id}/status`, { status }),
-    addToWishlist: (productId) => api.post('/wishlist', { product_id: productId }),
-    removeFromWishlist: (productId) => api.delete(`/wishlist/${productId}`),
-    getWishlist: () => api.get('/wishlist'),
-    isInWishlist: (productId) => api.get(`/wishlist/check/${productId}`),
-    getConversations: () => api.get('/chat/conversations'),
-    getMessages: (userId) => api.get(`/chat/messages/${userId}`),
-    sendMessage: (userId, message) => api.post('/chat/send', { to_user_id: userId, message }),
-    requestReturn: (orderId, itemId, reason) => api.post('/returns', { order_id: orderId, item_id: itemId, reason }),
+    requestReturn: (orderId, itemId, reason) => api.post('/returns', { orderId: orderId, itemId: itemId, reason }),
     getUserById: (id) => api.get(`/users/${id}`),
   };
   
@@ -121,7 +110,7 @@ if (USE_MOCK) {
   
   cartAPI = {
     getCart: () => api.get('/cart'),
-    addToCart: (productId, quantity) => api.post('/cart/items', { product_id: productId, quantity }),
+    addToCart: (productId, quantity) => api.post('/cart/items', { productId: productId, quantity }),
     updateCartItem: (itemId, quantity) => api.put(`/cart/items/${itemId}`, { quantity }),
     removeFromCart: (itemId) => api.delete(`/cart/items/${itemId}`),
     clearCart: () => api.delete('/cart'),

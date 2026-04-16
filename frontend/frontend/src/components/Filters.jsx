@@ -7,7 +7,7 @@ const Filters = ({ filters, onFilterChange, onReset }) => {
   const [localSearch, setLocalSearch] = useState(filters.search);
 
   const sortOptions = [
-    { value: 'created_at', label: 'По дате добавления' },
+    { value: 'createdAt', label: 'По дате добавления' },
     { value: 'price', label: 'По цене' },
     { value: 'name', label: 'По названию' },
   ];

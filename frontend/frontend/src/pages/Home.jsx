@@ -15,7 +15,7 @@ const Home = () => {
     search: '',
     minPrice: '',
     maxPrice: '',
-    sortBy: 'created_at',
+    sortBy: 'createdAt',
     order: 'desc',
   });
   
@@ -50,7 +50,7 @@ const Home = () => {
       let allProducts = response.data;
       
       if (isAuthenticated && user) {
-        allProducts = allProducts.filter(product => product.owner_id !== user.id);
+        allProducts = allProducts.filter(product => product.ownerId !== user.id);
       }
       
       setProducts(allProducts);
@@ -70,7 +70,7 @@ const Home = () => {
       search: '',
       minPrice: '',
       maxPrice: '',
-      sortBy: 'created_at',
+      sortBy: 'createdAt',
       order: 'desc',
     });
   };

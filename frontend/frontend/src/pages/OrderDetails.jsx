@@ -27,7 +27,7 @@ const OrderDetails = () => {
       setOrder(orderRes.data);
       
       const addressesRes = await authAPI.getAddresses();
-      const orderAddress = addressesRes.data.find(a => a.id === orderRes.data.delivery_address_id);
+      const orderAddress = addressesRes.data.find(a => a.id === orderRes.data.deliveryAddressId);
       setAddress(orderAddress);
     } catch (error) {
       console.error('Ошибка загрузки заказа:', error);
@@ -138,15 +138,15 @@ const OrderDetails = () => {
                       <div className="image-placeholder-small"></div>
                     </div>
                     <div className="order-item-info-full">
-                      <a href={`/product/${item.product_id}`} className="order-item-name">
-                        {item.product_name}
+                      <a href={`/product/${item.productId}`} className="order-item-name">
+                        {item.productName}
                       </a>
                       <div className="order-item-meta">
-                        {formatPrice(item.price_at_order)} ₽ × {item.quantity}
+                        {formatPrice(item.priceAtOrder)} ₽ × {item.quantity}
                       </div>
                     </div>
                     <div className="order-item-total-full">
-                      {formatPrice(item.price_at_order * item.quantity)} ₽
+                      {formatPrice(item.priceAtOrder * item.quantity)} ₽
                     </div>
                   </div>
                 ))}
@@ -172,23 +172,23 @@ const OrderDetails = () => {
               <h3>Информация о заказе</h3>
               <div className="summary-item">
                 <span>Дата создания:</span>
-                <span>{formatDate(order.created_at)}</span>
+                <span>{formatDate(order.createdAt)}</span>
               </div>
-              {order.completed_at && (
+              {order.completedAt && (
                 <div className="summary-item">
                   <span>Дата завершения:</span>
-                  <span>{formatDate(order.completed_at)}</span>
+                  <span>{formatDate(order.completedAt)}</span>
                 </div>
               )}
-              {order.cancelled_at && (
+              {order.cancelledAt && (
                 <div className="summary-item">
                   <span>Дата отмены:</span>
-                  <span>{formatDate(order.cancelled_at)}</span>
+                  <span>{formatDate(order.cancelledAt)}</span>
                 </div>
               )}
               <div className="summary-total-details">
                 <span>Итого к оплате:</span>
-                <strong>{formatPrice(order.total_amount)} ₽</strong>
+                <strong>{formatPrice(order.totalAmount)} ₽</strong>
               </div>
             </div>
 

@@ -154,14 +154,14 @@ const Profile = () => {
       <div className="container">
         <div className="profile-header">
           <div className="profile-avatar">
-            {user.full_name?.charAt(0) || user.username?.charAt(0) || 'П'}
+            {user.fullName?.charAt(0) || user.username?.charAt(0) || 'П'}
           </div>
           <div className="profile-info">
-            <h1>{user.full_name || user.username}</h1>
+            <h1>{user.fullName || user.username}</h1>
             <p className="profile-username">@{user.username}</p>
             <p className="profile-email">{user.email}</p>
             <p className="profile-member">
-              Участник с {new Date(user.created_at).toLocaleDateString('ru-RU')}
+              Участник с {new Date(user.createdAt).toLocaleDateString('ru-RU')}
             </p>
           </div>
         </div>
@@ -185,7 +185,7 @@ const Profile = () => {
                 <h3>Личная информация</h3>
                 <div className="info-row">
                   <span className="info-label">Полное имя:</span>
-                  <span className="info-value">{user.full_name || 'Не указано'}</span>
+                  <span className="info-value">{user.fullName || 'Не указано'}</span>
                 </div>
                 <div className="info-row">
                   <span className="info-label">Имя пользователя:</span>
@@ -198,7 +198,7 @@ const Profile = () => {
                 <div className="info-row">
                   <span className="info-label">Дата регистрации:</span>
                   <span className="info-value">
-                    {new Date(user.created_at).toLocaleDateString('ru-RU')}
+                    {new Date(user.createdAt).toLocaleDateString('ru-RU')}
                   </span>
                 </div>
               </div>
@@ -277,7 +277,7 @@ const Profile = () => {
                       <div className="profile-order-header">
                         <div className="profile-order-info">
                           <span className="profile-order-number">Заказ №{order.id}</span>
-                          <span className="profile-order-date">{formatDate(order.created_at)}</span>
+                          <span className="profile-order-date">{formatDate(order.createdAt)}</span>
                         </div>
                         <div className={`profile-order-status ${getStatusClass(order.status)}`}>
                           {getStatusText(order.status)}
@@ -287,7 +287,7 @@ const Profile = () => {
                       <div className="profile-order-items">
                         {order.items && order.items.slice(0, 2).map(item => (
                           <div key={item.id} className="profile-order-item">
-                            <span className="profile-order-item-name">{item.product_name}</span>
+                            <span className="profile-order-item-name">{item.productName}</span>
                             <span className="profile-order-item-quantity">× {item.quantity}</span>
                           </div>
                         ))}
@@ -301,7 +301,7 @@ const Profile = () => {
                       <div className="profile-order-footer">
                         <div className="profile-order-total">
                           <span>Итого:</span>
-                          <strong>{formatPrice(order.total_amount)} ₽</strong>
+                          <strong>{formatPrice(order.totalAmount)} ₽</strong>
                         </div>
                         <Link to={`/orders/${order.id}`} className="profile-order-link">
                           Подробнее
