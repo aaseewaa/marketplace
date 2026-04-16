@@ -10,23 +10,24 @@ const ProductCard = ({ product }) => {
   const getImageUrl = () => {
     if (product?.images && product.images.length > 0) {
       let url = product.images[0];
-      if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+      if (url && (url.startsWith('https://') || url.startsWith('https://'))) {
         return url;
       }
-      return url ? `https://${url}` : null;
+
+      return url ? `https://localhost:7202${url}` : null;
     }
     if (product?.imageUrl) {
       let url = product.imageUrl;
-      if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+      if (url && (url.startsWith('https://') || url.startsWith('https://'))) {
         return url;
       }
-      return url ? `https://${url}` : null;
+      return url ? `https://localhost:7202${url}` : null;
     }
     return null;
   };
 
   const imageUrl = getImageUrl();
-
+  
   return (
     <Link to={`/product/${product.id}`} className="product-card">
       <div className="product-image">

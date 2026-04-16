@@ -1,13 +1,15 @@
 import axios from 'axios';
 import { mockAuthAPI, mockProductsAPI } from './mockApi';
 
-const USE_MOCK = true;
+const STATIC_BASE_URL = 'https://localhost:7202';
+const USE_MOCK = false;
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  baseURL: 'https://localhost:7202/api',
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true
 });
 
 api.interceptors.request.use((config) => {
@@ -122,6 +124,26 @@ export { authAPI, productsAPI, reviewsAPI, cartAPI };
 export const usersAPI = {
   getAll: () => api.get('/users'),
   getById: (id) => api.get(`/users/${id}`),
+};
+
+export const getImageUrl = (imageUrl) => {
+  // Если URL не указан, возвращаем путь к заглушке
+  if (!imageUrl) {
+    return '/placeholder.jpg';
+  }
+  
+  // Если это уже полный URL (начинается с http:// или https://)
+  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+    return imageUrl;
+  }
+  
+  // Если путь начинается с / (относительный путь)
+  if (imageUrl.startsWith('/')) {
+    return `${STATIC_BASE_URL}${imageUrl}`;
+  }
+  
+  // Если путь без слеша (например, "products/shorts1.jpg")
+  return `${STATIC_BASE_URL}/${imageUrl}`;
 };
 
 export default api;

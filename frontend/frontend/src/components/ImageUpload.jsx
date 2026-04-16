@@ -5,7 +5,7 @@ const ImageUpload = ({ onImagesChange, currentImages = [], className }) => {
   const [newUrl, setNewUrl] = useState('');
 
   const handleAddUrl = () => {
-    if (newUrl && (newUrl.startsWith('http://') || newUrl.startsWith('https://'))) {
+    if (newUrl && (newUrl.startsWith('https://') || newUrl.startsWith('https://'))) {
       const newImages = [...currentImages, newUrl];
       if (onImagesChange && typeof onImagesChange === 'function') {
         onImagesChange(newImages);

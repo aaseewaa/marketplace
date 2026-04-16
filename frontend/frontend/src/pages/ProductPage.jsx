@@ -136,6 +136,9 @@ const ProductPage = () => {
   };
 
   const getImagesList = () => {
+    console.log(product);
+    
+
     if (product?.images && product.images.length > 0) {
       return product.images;
     }
