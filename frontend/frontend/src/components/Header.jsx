@@ -11,12 +11,6 @@ const Header = () => {
   const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      fetchCartCount();
-    }
-  }, [isAuthenticated]);
-
-  useEffect(() => {
     const handleCartUpdate = () => {
       if (isAuthenticated) {
         fetchCartCount();

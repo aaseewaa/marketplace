@@ -845,9 +845,9 @@ export const mockProductsAPI = {
         
         if (cart[currentUser.id]) {
           cart[currentUser.id] = { items: [], totalAmount: 0 };
+          saveAllData();
         }
         
-        saveAllData();
         resolve({ data: newOrder });
       }, 500);
     });

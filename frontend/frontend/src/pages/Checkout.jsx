@@ -114,6 +114,11 @@ const Checkout = () => {
       }));
       
       const response = await productsAPI.createOrder(selectedAddressId, orderItems);
+      
+      setCart({ items: [], totalAmount: 0 });
+      
+      window.dispatchEvent(new Event('cartUpdated'));
+      
       success('Заказ успешно оформлен!');
       navigate(`/orders/${response.data.id}`);
     } catch (error) {
@@ -245,7 +250,7 @@ const Checkout = () => {
                       <div className="image-placeholder-small"></div>
                     </div>
                     <div className="order-item-info">
-                      <h4>{item.product_name}</h4>
+                      <h4>{item.productName}</h4>
                       <p>{formatPrice(item.price)} ₽ × {item.quantity}</p>
                     </div>
                     <div className="order-item-total">

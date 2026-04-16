@@ -15,6 +15,16 @@ const Cart = () => {
 
   useEffect(() => {
     fetchCart();
+    
+    const handleCartUpdate = () => {
+      fetchCart();
+    };
+    
+    window.addEventListener('cartUpdated', handleCartUpdate);
+    
+    return () => {
+      window.removeEventListener('cartUpdated', handleCartUpdate);
+    };
   }, []);
 
   const fetchCart = async () => {
