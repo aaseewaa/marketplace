@@ -16,6 +16,20 @@ const Header = () => {
     }
   }, [isAuthenticated]);
 
+  useEffect(() => {
+    const handleCartUpdate = () => {
+      if (isAuthenticated) {
+        fetchCartCount();
+      }
+    };
+    
+    window.addEventListener('cartUpdated', handleCartUpdate);
+    
+    return () => {
+      window.removeEventListener('cartUpdated', handleCartUpdate);
+    };
+  }, [isAuthenticated]);
+
   const fetchCartCount = async () => {
     try {
       const response = await cartAPI.getCart();

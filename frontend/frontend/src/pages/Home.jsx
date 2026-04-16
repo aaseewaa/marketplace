@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { productsAPI } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import ProductCard from '../components/ProductCard';
 import Filters from '../components/Filters';
 import HeroSection from '../components/HeroSection';
@@ -20,6 +21,7 @@ const Home = () => {
   
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -45,7 +47,13 @@ const Home = () => {
       if (filters.order) params.order = filters.order;
       
       const response = await productsAPI.getAll(params);
-      setProducts(response.data);
+      let allProducts = response.data;
+      
+      if (isAuthenticated && user) {
+        allProducts = allProducts.filter(product => product.owner_id !== user.id);
+      }
+      
+      setProducts(allProducts);
     } catch (err) {
       setError('Не удалось загрузить товары. Попробуйте позже.');
     } finally {

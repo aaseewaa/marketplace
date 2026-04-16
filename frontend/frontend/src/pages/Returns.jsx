@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useToast } from '../context/ToastContext';
 import { productsAPI } from '../services/api';
+import ConfirmModal from '../components/ConfirmModal';
 import './Returns.css';
 
 const Returns = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showReturnForm, setShowReturnForm] = useState(null);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const { success, error: showError } = useToast();
 
   useEffect(() => {
@@ -146,6 +148,17 @@ const Returns = () => {
           />
         )}
       </div>
+
+      <ConfirmModal
+        isOpen={showCancelConfirm}
+        title="Отмена возврата"
+        message="Вы уверены, что хотите отменить заявку на возврат?"
+        onConfirm={() => {
+          setShowCancelConfirm(false);
+          setShowReturnForm(null);
+        }}
+        onCancel={() => setShowCancelConfirm(false)}
+      />
     </div>
   );
 };

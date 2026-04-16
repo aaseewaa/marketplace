@@ -13,7 +13,6 @@ import ProductPage from './pages/ProductPage';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
 import OrderDetails from './pages/OrderDetails';
-import Wishlist from './pages/Wishlist';
 import Returns from './pages/Returns';
 import SellPage from './pages/SellPage';
 
@@ -51,11 +50,6 @@ function App() {
             <Route path="/orders/:id" element={
               <PrivateRoute>
                 <OrderDetails />
-              </PrivateRoute>
-            } />
-            <Route path="/wishlist" element={
-              <PrivateRoute>
-                <Wishlist />
               </PrivateRoute>
             } />
             <Route path="/returns" element={

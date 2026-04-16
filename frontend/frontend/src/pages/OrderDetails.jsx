@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { productsAPI, authAPI } from '../services/api';
+import { useToast } from '../context/ToastContext';
+import ConfirmModal from '../components/ConfirmModal';
 import './OrderDetails.css';
 
 const OrderDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { success, error: showError } = useToast();
   const [order, setOrder] = useState(null);
   const [address, setAddress] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+  const [showCompleteConfirm, setShowCompleteConfirm] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
   useEffect(() => {
     fetchOrder();
@@ -18,19 +23,12 @@ const OrderDetails = () => {
   const fetchOrder = async () => {
     setLoading(true);
     try {
-      if (typeof productsAPI.getOrderById !== 'function') {
-        console.error('productsAPI.getOrderById is not a function');
-        navigate('/orders');
-        return;
-      }
       const orderRes = await productsAPI.getOrderById(id);
       setOrder(orderRes.data);
       
-      if (typeof authAPI.getAddresses === 'function') {
-        const addressesRes = await authAPI.getAddresses();
-        const orderAddress = addressesRes.data.find(a => a.id === orderRes.data.delivery_address_id);
-        setAddress(orderAddress);
-      }
+      const addressesRes = await authAPI.getAddresses();
+      const orderAddress = addressesRes.data.find(a => a.id === orderRes.data.delivery_address_id);
+      setAddress(orderAddress);
     } catch (error) {
       console.error('Ошибка загрузки заказа:', error);
       navigate('/orders');
@@ -39,18 +37,29 @@ const OrderDetails = () => {
     }
   };
 
-  const handleUpdateStatus = async (newStatus) => {
+  const handleCompleteOrder = async () => {
     setUpdating(true);
     try {
-      if (typeof productsAPI.updateOrderStatus !== 'function') {
-        alert('Функция обновления статуса недоступна');
-        return;
-      }
-      const response = await productsAPI.updateOrderStatus(id, newStatus);
+      const response = await productsAPI.updateOrderStatus(id, 'completed');
       setOrder(response.data);
-      alert('Статус заказа обновлен');
+      success('Заказ завершен');
+      setShowCompleteConfirm(false);
     } catch (error) {
-      alert(error.response?.data?.message || 'Ошибка обновления статуса');
+      showError(error.response?.data?.message || 'Ошибка обновления статуса');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handleCancelOrder = async () => {
+    setUpdating(true);
+    try {
+      const response = await productsAPI.updateOrderStatus(id, 'cancelled');
+      setOrder(response.data);
+      success('Заказ отменен');
+      setShowCancelConfirm(false);
+    } catch (error) {
+      showError(error.response?.data?.message || 'Ошибка обновления статуса');
     } finally {
       setUpdating(false);
     }
@@ -186,14 +195,14 @@ const OrderDetails = () => {
             {order.status === 'created' && (
               <div className="status-actions">
                 <button 
-                  onClick={() => handleUpdateStatus('completed')}
+                  onClick={() => setShowCompleteConfirm(true)}
                   disabled={updating}
                   className="complete-btn button-primary"
                 >
                   Подтвердить получение
                 </button>
                 <button 
-                  onClick={() => handleUpdateStatus('cancelled')}
+                  onClick={() => setShowCancelConfirm(true)}
                   disabled={updating}
                   className="cancel-btn button-danger"
                 >
@@ -204,6 +213,24 @@ const OrderDetails = () => {
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={showCompleteConfirm}
+        title="Подтверждение получения"
+        message="Вы уверены, что получили заказ? После подтверждения вернуть товар будет сложнее."
+        onConfirm={handleCompleteOrder}
+        onCancel={() => setShowCompleteConfirm(false)}
+        loading={updating}
+      />
+
+      <ConfirmModal
+        isOpen={showCancelConfirm}
+        title="Отмена заказа"
+        message="Вы уверены, что хотите отменить этот заказ? Это действие нельзя отменить."
+        onConfirm={handleCancelOrder}
+        onCancel={() => setShowCancelConfirm(false)}
+        loading={updating}
+      />
     </div>
   );
 };

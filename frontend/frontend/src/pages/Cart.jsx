@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { cartAPI } from '../services/api';
+import { cartAPI, productsAPI } from '../services/api';
+import { useToast } from '../context/ToastContext';
+import ConfirmModal from '../components/ConfirmModal';
 import './Cart.css';
 
 const Cart = () => {
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updatingItemId, setUpdatingItemId] = useState(null);
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false, itemId: null, type: '' });
+  const [productQuantities, setProductQuantities] = useState({});
+  const { success, error: showError } = useToast();
 
   useEffect(() => {
     fetchCart();
@@ -17,6 +22,19 @@ const Cart = () => {
     try {
       const response = await cartAPI.getCart();
       setCart(response.data);
+      
+      if (response.data?.items) {
+        const quantities = {};
+        for (const item of response.data.items) {
+          try {
+            const productRes = await productsAPI.getById(item.product_id);
+            quantities[item.product_id] = productRes.data.quantity;
+          } catch (err) {
+            console.error('Ошибка загрузки товара:', err);
+          }
+        }
+        setProductQuantities(quantities);
+      }
     } catch (error) {
       console.error('Ошибка загрузки корзины:', error);
     } finally {
@@ -24,10 +42,17 @@ const Cart = () => {
     }
   };
 
-  const handleUpdateQuantity = async (itemId, currentQuantity, delta) => {
+  const handleUpdateQuantity = async (itemId, productId, currentQuantity, delta) => {
     const newQuantity = currentQuantity + delta;
+    const maxAvailable = productQuantities[productId] || 0;
+    
     if (newQuantity < 1) {
-      handleRemoveItem(itemId);
+      setConfirmModal({ isOpen: true, itemId, type: 'remove' });
+      return;
+    }
+    
+    if (newQuantity > maxAvailable) {
+      showError(`Недоступно больше ${maxAvailable} шт. данного товара`);
       return;
     }
 
@@ -46,18 +71,17 @@ const Cart = () => {
         const newTotal = updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         return { ...prevCart, items: updatedItems, total_amount: newTotal };
       });
+      
+      window.dispatchEvent(new Event('cartUpdated'));
     } catch (error) {
-      alert(error.response?.data?.message || 'Ошибка обновления корзины');
+      showError(error.response?.data?.message || 'Ошибка обновления корзины');
     } finally {
       setUpdatingItemId(null);
     }
   };
 
-  const handleRemoveItem = async (itemId) => {
-    if (!confirm('Удалить товар из корзины?')) {
-      return;
-    }
-
+  const handleRemoveItem = async () => {
+    const { itemId } = confirmModal;
     setUpdatingItemId(itemId);
     try {
       await cartAPI.removeFromCart(itemId);
@@ -68,27 +92,53 @@ const Cart = () => {
         const newTotal = updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         return { ...prevCart, items: updatedItems, total_amount: newTotal };
       });
+      
+      window.dispatchEvent(new Event('cartUpdated'));
+      success('Товар удален из корзины');
     } catch (error) {
-      alert(error.response?.data?.message || 'Ошибка удаления товара');
+      showError(error.response?.data?.message || 'Ошибка удаления товара');
     } finally {
       setUpdatingItemId(null);
+      setConfirmModal({ isOpen: false, itemId: null, type: '' });
     }
   };
 
-  const handleClearCart = async () => {
-    if (!confirm('Очистить всю корзину?')) {
-      return;
-    }
+  const handleClearCart = () => {
+    setConfirmModal({ isOpen: true, itemId: null, type: 'clear' });
+  };
 
+  const confirmClearCart = async () => {
     setUpdatingItemId('clear');
     try {
       await cartAPI.clearCart();
       setCart({ items: [], total_amount: 0 });
+      
+      window.dispatchEvent(new Event('cartUpdated'));
+      success('Корзина очищена');
     } catch (error) {
-      alert(error.response?.data?.message || 'Ошибка очистки корзины');
+      showError(error.response?.data?.message || 'Ошибка очистки корзины');
     } finally {
       setUpdatingItemId(null);
+      setConfirmModal({ isOpen: false, itemId: null, type: '' });
     }
+  };
+
+  const handleConfirm = () => {
+    if (confirmModal.type === 'remove') {
+      handleRemoveItem();
+    } else if (confirmModal.type === 'clear') {
+      confirmClearCart();
+    }
+  };
+
+  const getConfirmMessage = () => {
+    if (confirmModal.type === 'remove') {
+      return 'Вы уверены, что хотите удалить этот товар из корзины?';
+    }
+    if (confirmModal.type === 'clear') {
+      return 'Вы уверены, что хотите очистить всю корзину? Это действие нельзя отменить.';
+    }
+    return '';
   };
 
   const formatPrice = (price) => {
@@ -143,6 +193,10 @@ const Cart = () => {
           <div className="cart-items">
             {cartItems.map((item) => {
               const isUpdating = updatingItemId === item.id;
+              const maxQuantity = productQuantities[item.product_id] || 0;
+              const isMaxQuantity = item.quantity >= maxQuantity;
+              const isMinQuantity = item.quantity <= 1;
+              
               return (
                 <div key={item.id} className="cart-item">
                   <div className="cart-item-image">
@@ -151,11 +205,14 @@ const Cart = () => {
                   <div className="cart-item-info">
                     <h3 className="cart-item-title">{item.product_name}</h3>
                     <p className="cart-item-price">{formatPrice(item.price)} ₽</p>
+                    {maxQuantity > 0 && (
+                      <p className="cart-item-stock">Доступно: {maxQuantity} шт.</p>
+                    )}
                   </div>
                   <div className="cart-item-quantity">
                     <button
-                      onClick={() => handleUpdateQuantity(item.id, item.quantity, -1)}
-                      disabled={isUpdating}
+                      onClick={() => handleUpdateQuantity(item.id, item.product_id, item.quantity, -1)}
+                      disabled={isUpdating || isMinQuantity}
                       className="quantity-btn"
                     >
                       -
@@ -164,8 +221,8 @@ const Cart = () => {
                       {isUpdating ? '...' : item.quantity}
                     </span>
                     <button
-                      onClick={() => handleUpdateQuantity(item.id, item.quantity, 1)}
-                      disabled={isUpdating}
+                      onClick={() => handleUpdateQuantity(item.id, item.product_id, item.quantity, 1)}
+                      disabled={isUpdating || isMaxQuantity}
                       className="quantity-btn"
                     >
                       +
@@ -175,7 +232,7 @@ const Cart = () => {
                     <span>{formatPrice(item.price * item.quantity)} ₽</span>
                   </div>
                   <button
-                    onClick={() => handleRemoveItem(item.id)}
+                    onClick={() => setConfirmModal({ isOpen: true, itemId: item.id, type: 'remove' })}
                     disabled={isUpdating}
                     className="remove-item-btn"
                   >
@@ -206,6 +263,15 @@ const Cart = () => {
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        title="Подтверждение"
+        message={getConfirmMessage()}
+        onConfirm={handleConfirm}
+        onCancel={() => setConfirmModal({ isOpen: false, itemId: null, type: '' })}
+        loading={updatingItemId !== null}
+      />
     </div>
   );
 };

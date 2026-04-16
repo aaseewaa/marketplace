@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cartAPI, authAPI, productsAPI } from '../services/api';
+import { useToast } from '../context/ToastContext';
 import AddressModal from '../components/AddressModal';
+import ConfirmModal from '../components/ConfirmModal';
 import './Checkout.css';
 
 const Checkout = () => {
   const navigate = useNavigate();
+  const { success, error: showError } = useToast();
   const [cart, setCart] = useState(null);
   const [addresses, setAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
@@ -13,6 +16,7 @@ const Checkout = () => {
   const [submitting, setSubmitting] = useState(false);
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [editingAddress, setEditingAddress] = useState(null);
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false, addressId: null, type: '' });
 
   useEffect(() => {
     loadData();
@@ -60,39 +64,45 @@ const Checkout = () => {
       
       setShowAddressModal(false);
       setEditingAddress(null);
+      success(editingAddress ? 'Адрес обновлен' : 'Адрес добавлен');
       return { success: true };
     } catch (error) {
       return { success: false, error: error.response?.data?.message || 'Ошибка сохранения адреса' };
     }
   };
 
-  const handleDeleteAddress = async (addressId) => {
-    if (!confirm('Удалить этот адрес?')) return;
-    
+  const handleDeleteAddress = (addressId) => {
+    setConfirmModal({ isOpen: true, addressId, type: 'deleteAddress' });
+  };
+
+  const confirmDeleteAddress = async () => {
     try {
-      await authAPI.deleteAddress(addressId);
-      setAddresses(prev => prev.filter(a => a.id !== addressId));
-      if (selectedAddressId === addressId) {
-        const remaining = addresses.filter(a => a.id !== addressId);
+      await authAPI.deleteAddress(confirmModal.addressId);
+      setAddresses(prev => prev.filter(a => a.id !== confirmModal.addressId));
+      if (selectedAddressId === confirmModal.addressId) {
+        const remaining = addresses.filter(a => a.id !== confirmModal.addressId);
         if (remaining.length > 0) {
           setSelectedAddressId(remaining[0].id);
         } else {
           setSelectedAddressId(null);
         }
       }
+      success('Адрес удален');
     } catch (error) {
-      alert('Ошибка удаления адреса');
+      showError('Ошибка удаления адреса');
+    } finally {
+      setConfirmModal({ isOpen: false, addressId: null, type: '' });
     }
   };
 
   const handleSubmitOrder = async () => {
     if (!selectedAddressId) {
-      alert('Выберите адрес доставки');
+      showError('Выберите адрес доставки');
       return;
     }
 
     if (!cart?.items?.length) {
-      alert('Корзина пуста');
+      showError('Корзина пуста');
       return;
     }
 
@@ -104,11 +114,11 @@ const Checkout = () => {
       }));
       
       const response = await productsAPI.createOrder(selectedAddressId, orderItems);
-      alert('Заказ успешно оформлен!');
+      success('Заказ успешно оформлен!');
       navigate(`/orders/${response.data.id}`);
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Ошибка оформления заказа';
-      alert(errorMessage);
+      showError(errorMessage);
     } finally {
       setSubmitting(false);
     }
@@ -285,6 +295,15 @@ const Checkout = () => {
           loading={submitting}
         />
       )}
+
+      <ConfirmModal
+        isOpen={confirmModal.isOpen && confirmModal.type === 'deleteAddress'}
+        title="Удаление адреса"
+        message="Вы уверены, что хотите удалить этот адрес? Это действие нельзя отменить."
+        onConfirm={confirmDeleteAddress}
+        onCancel={() => setConfirmModal({ isOpen: false, addressId: null, type: '' })}
+        loading={submitting}
+      />
     </div>
   );
 };

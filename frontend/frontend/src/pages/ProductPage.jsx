@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { productsAPI, reviewsAPI, cartAPI } from '../services/api';
 import EditProductModal from '../components/EditProductModal';
-import WishlistButton from '../components/WishlistButton';
+import ConfirmModal from '../components/ConfirmModal';
 import './ProductPage.css';
 
 const ProductPage = () => {
@@ -25,6 +25,7 @@ const ProductPage = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
 
@@ -75,6 +76,11 @@ const ProductPage = () => {
     } finally {
       setAddingToCart(false);
     }
+
+    if (product.owner_id === user?.id) {
+      showError('Вы не можете купить свой собственный товар');
+      return;
+    }
   };
 
   const handleSubmitReview = async (e) => {
@@ -117,10 +123,6 @@ const ProductPage = () => {
   };
 
   const handleDeleteProduct = async () => {
-    if (!confirm('Вы уверены, что хотите удалить этот товар?')) {
-      return;
-    }
-
     setDeleting(true);
     try {
       await productsAPI.delete(id);
@@ -130,15 +132,8 @@ const ProductPage = () => {
       showError(err.response?.data?.message || 'Ошибка при удалении товара');
     } finally {
       setDeleting(false);
+      setShowDeleteConfirm(false);
     }
-  };
-
-  const handleContactSeller = () => {
-    if (!isAuthenticated) {
-      navigate('/login');
-      return;
-    }
-    navigate(`/chat/${product.owner_id}`);
   };
 
   const formatPrice = (price) => {
@@ -217,9 +212,6 @@ const ProductPage = () => {
               ) : (
                 <div className="image-placeholder-large"></div>
               )}
-              {imageList.length > 0 && (
-                <div className="zoom-icon">🔍</div>
-              )}
             </div>
             
             {imageList.length > 1 && (
@@ -242,7 +234,6 @@ const ProductPage = () => {
               <div className="product-price-large">
                 {formatPrice(product.price)} ₽
               </div>
-              <WishlistButton productId={product.id} size="large" />
             </div>
 
             <h1 className="product-title">{product.name}</h1>
@@ -304,7 +295,7 @@ const ProductPage = () => {
                   Редактировать товар
                 </button>
                 <button 
-                  onClick={handleDeleteProduct} 
+                  onClick={() => setShowDeleteConfirm(true)} 
                   disabled={deleting}
                   className="button-danger"
                 >
@@ -401,6 +392,15 @@ const ProductPage = () => {
           loading={saving}
         />
       )}
+
+      <ConfirmModal
+        isOpen={showDeleteConfirm}
+        title="Удаление товара"
+        message="Вы уверены, что хотите удалить этот товар? Это действие нельзя отменить."
+        onConfirm={handleDeleteProduct}
+        onCancel={() => setShowDeleteConfirm(false)}
+        loading={deleting}
+      />
     </div>
   );
 };

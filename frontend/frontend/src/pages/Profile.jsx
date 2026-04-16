@@ -14,7 +14,6 @@ const Profile = () => {
   const { success, error: showError } = useToast();
   const [userProducts, setUserProducts] = useState([]);
   const [userOrders, setUserOrders] = useState([]);
-  const [wishlist, setWishlist] = useState([]);
   const [addresses, setAddresses] = useState([]);
   const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(false);
@@ -28,8 +27,6 @@ const Profile = () => {
       fetchUserProducts();
     } else if (activeTab === 'orders') {
       fetchUserOrders();
-    } else if (activeTab === 'wishlist') {
-      fetchWishlist();
     } else if (activeTab === 'addresses') {
       fetchAddresses();
     }
@@ -55,19 +52,6 @@ const Profile = () => {
     } catch (error) {
       console.error('Ошибка загрузки заказов:', error);
       setUserOrders([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchWishlist = async () => {
-    setLoading(true);
-    try {
-      const response = await productsAPI.getWishlist();
-      setWishlist(response.data || []);
-    } catch (error) {
-      console.error('Ошибка загрузки избранного:', error);
-      setWishlist([]);
     } finally {
       setLoading(false);
     }
@@ -160,7 +144,6 @@ const Profile = () => {
     { id: 'products', label: 'Мои товары' },
     { id: 'orders', label: 'Заказы' },
     { id: 'returns', label: 'Возвраты' },
-    { id: 'wishlist', label: 'Избранное' },
     { id: 'addresses', label: 'Адреса' }
   ];
 
@@ -338,26 +321,6 @@ const Profile = () => {
                 <p>Здесь будут отображаться ваши заявки на возврат</p>
                 <Link to="/returns" className="button-primary">Перейти к возвратам</Link>
               </div>
-            </div>
-          )}
-
-          {activeTab === 'wishlist' && (
-            <div className="wishlist-section">
-              <h3>Избранное</h3>
-              {loading ? (
-                <div className="loading">Загрузка...</div>
-              ) : wishlist.length === 0 ? (
-                <div className="empty-state">
-                  <p>У вас пока нет избранных товаров</p>
-                  <Link to="/" className="button-primary">Перейти к покупкам</Link>
-                </div>
-              ) : (
-                <div className="products-grid">
-                  {wishlist.map(product => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-                </div>
-              )}
             </div>
           )}
 

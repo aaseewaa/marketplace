@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import WishlistButton from './WishlistButton';
 import './ProductCard.css';
 
 const ProductCard = ({ product }) => {
@@ -50,7 +49,6 @@ const ProductCard = ({ product }) => {
           )}
         </div>
       </Link>
-      <WishlistButton productId={product.id} size="small" />
     </div>
   );
 };
