@@ -27,7 +27,6 @@ const ProductPage = () => {
   const [saving, setSaving] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [isZoomed, setIsZoomed] = useState(false);
 
   useEffect(() => {
     fetchProduct();
@@ -76,11 +75,6 @@ const ProductPage = () => {
       showError(err.response?.data?.message || 'Ошибка при добавлении в корзину');
     } finally {
       setAddingToCart(false);
-    }
-
-    if (product.ownerId === user?.id) {
-      showError('Вы не можете купить свой собственный товар');
-      return;
     }
   };
 
@@ -141,22 +135,17 @@ const ProductPage = () => {
     return new Intl.NumberFormat('ru-RU').format(price);
   };
 
-  const getImageList = () => {
+  const getImagesList = () => {
+    if (product?.images && product.images.length > 0) {
+      return product.images;
+    }
     if (product?.imageUrl) {
       return [product.imageUrl];
     }
     return [];
   };
 
-  const imageList = getImageList();
-
-  const handleImageClick = (index) => {
-    setSelectedImage(index);
-  };
-
-  const handleMainImageClick = () => {
-    setIsZoomed(!isZoomed);
-  };
+  const imagesList = getImagesList();
 
   if (loading) {
     return (
@@ -193,15 +182,12 @@ const ProductPage = () => {
       <div className="container">
         <div className="product-layout">
           <div className="product-gallery">
-            <div 
-              className={`gallery-main ${isZoomed ? 'zoomed' : ''}`}
-              onClick={handleMainImageClick}
-            >
-              {imageList.length > 0 && imageList[selectedImage] ? (
+            <div className="product-main-image">
+              {imagesList.length > 0 && imagesList[selectedImage] ? (
                 <img 
-                  src={imageList[selectedImage]} 
-                  alt={product.name}
-                  className="gallery-main-img"
+                  src={imagesList[selectedImage]} 
+                  alt={product.name} 
+                  className="product-main-img"
                   onError={(e) => {
                     e.target.style.display = 'none';
                     e.target.parentElement.innerHTML = '<div class="image-placeholder-large"></div>';
@@ -212,13 +198,13 @@ const ProductPage = () => {
               )}
             </div>
             
-            {imageList.length > 1 && (
+            {imagesList.length > 1 && (
               <div className="gallery-thumbnails">
-                {imageList.map((img, index) => (
+                {imagesList.map((img, index) => (
                   <div
                     key={index}
                     className={`thumbnail ${selectedImage === index ? 'active' : ''}`}
-                    onClick={() => handleImageClick(index)}
+                    onClick={() => setSelectedImage(index)}
                   >
                     <img src={img} alt={`${product.name} ${index + 1}`} />
                   </div>
@@ -347,7 +333,7 @@ const ProductPage = () => {
                   rows="4"
                   className="filter-input"
                   placeholder="Поделитесь впечатлениями о товаре..."
-                ></textarea>
+                />
               </div>
               <button
                 type="submit"

@@ -8,7 +8,7 @@
   margin-bottom: 16px;
 }
 
-.url-input-group .url-input {
+.url-input {
   flex: 1;
   padding: 10px 12px;
   border: 1px solid #e5e5e5;
@@ -17,7 +17,7 @@
   font-family: monospace;
 }
 
-.url-input-group .url-input:focus {
+.url-input:focus {
   outline: none;
   border-color: #1a1a1a;
 }
@@ -38,6 +38,7 @@
   position: relative;
   width: 80px;
   height: 80px;
+  flex-shrink: 0;
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid #e5e5e5;

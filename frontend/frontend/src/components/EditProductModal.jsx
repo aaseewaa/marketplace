@@ -3,12 +3,22 @@ import ImageUpload from './ImageUpload';
 import './Modal.css';
 
 const EditProductModal = ({ product, onClose, onSave, loading }) => {
+  const getInitialImages = () => {
+    if (product.images && product.images.length > 0) {
+      return product.images;
+    }
+    if (product.imageUrl) {
+      return [product.imageUrl];
+    }
+    return [];
+  };
+
   const [formData, setFormData] = useState({
     name: product?.name || '',
     description: product?.description || '',
     price: product?.price || '',
     quantity: product?.quantity || '',
-    images: product?.images || (product?.image ? [product.image] : [])
+    images: getInitialImages()
   });
   const [error, setError] = useState('');
 
@@ -49,7 +59,8 @@ const EditProductModal = ({ product, onClose, onSave, loading }) => {
       description: formData.description.trim(),
       price: price,
       quantity: quantity,
-      imageUrl: formData.images?.[0] || null 
+      imageUrl: formData.images[0] || null,
+      images: formData.images
     });
 
     if (result && !result.success) {
@@ -97,32 +108,34 @@ const EditProductModal = ({ product, onClose, onSave, loading }) => {
             />
           </div>
 
-          <div className="form-group">
-            <label>Цена *</label>
-            <input
-              type="number"
-              name="price"
-              value={formData.price}
-              onChange={handleChange}
-              required
-              min="1"
-              step="1"
-              className="filter-input"
-            />
-          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Цена *</label>
+              <input
+                type="number"
+                name="price"
+                value={formData.price}
+                onChange={handleChange}
+                required
+                min="1"
+                step="1"
+                className="filter-input"
+              />
+            </div>
 
-          <div className="form-group">
-            <label>Количество *</label>
-            <input
-              type="number"
-              name="quantity"
-              value={formData.quantity}
-              onChange={handleChange}
-              required
-              min="0"
-              step="1"
-              className="filter-input"
-            />
+            <div className="form-group">
+              <label>Количество *</label>
+              <input
+                type="number"
+                name="quantity"
+                value={formData.quantity}
+                onChange={handleChange}
+                required
+                min="0"
+                step="1"
+                className="filter-input"
+              />
+            </div>
           </div>
 
           <div className="modal-actions">

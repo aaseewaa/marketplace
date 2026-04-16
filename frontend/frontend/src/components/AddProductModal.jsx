@@ -49,7 +49,8 @@ const AddProductModal = ({ onClose, onSave, loading }) => {
       description: formData.description.trim(),
       price: price,
       quantity: quantity,
-      imageUrl: formData.images?.[0] || null
+      imageUrl: formData.images[0] || null,
+      images: formData.images
     });
 
     if (result && !result.success) {
@@ -99,34 +100,36 @@ const AddProductModal = ({ onClose, onSave, loading }) => {
             />
           </div>
 
-          <div className="form-group">
-            <label>Цена *</label>
-            <input
-              type="number"
-              name="price"
-              value={formData.price}
-              onChange={handleChange}
-              required
-              min="1"
-              step="1"
-              className="filter-input"
-              placeholder="Например: 50000"
-            />
-          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Цена *</label>
+              <input
+                type="number"
+                name="price"
+                value={formData.price}
+                onChange={handleChange}
+                required
+                min="1"
+                step="1"
+                className="filter-input"
+                placeholder="Например: 50000"
+              />
+            </div>
 
-          <div className="form-group">
-            <label>Количество *</label>
-            <input
-              type="number"
-              name="quantity"
-              value={formData.quantity}
-              onChange={handleChange}
-              required
-              min="0"
-              step="1"
-              className="filter-input"
-              placeholder="Например: 10"
-            />
+            <div className="form-group">
+              <label>Количество *</label>
+              <input
+                type="number"
+                name="quantity"
+                value={formData.quantity}
+                onChange={handleChange}
+                required
+                min="0"
+                step="1"
+                className="filter-input"
+                placeholder="Например: 10"
+              />
+            </div>
           </div>
 
           <div className="modal-actions">
