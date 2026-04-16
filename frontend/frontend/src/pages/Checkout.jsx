@@ -142,7 +142,7 @@ const Checkout = () => {
   }
 
   const cartItems = cart?.items || [];
-  const totalAmount = cart?.total_amount || 0;
+  const totalAmount = cart?.totalAmount || 0;
 
   if (cartItems.length === 0) {
     return (

@@ -71,6 +71,7 @@ const ProductPage = () => {
     try {
       await cartAPI.addToCart(product.id, quantity);
       success('Товар добавлен в корзину');
+      window.dispatchEvent(new Event('cartUpdated'));
     } catch (err) {
       showError(err.response?.data?.message || 'Ошибка при добавлении в корзину');
     } finally {

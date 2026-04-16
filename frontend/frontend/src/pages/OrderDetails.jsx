@@ -84,6 +84,7 @@ const OrderDetails = () => {
   };
 
   const formatPrice = (price) => {
+    if (price === undefined || price === null) return '0';
     return new Intl.NumberFormat('ru-RU').format(price);
   };
 
@@ -172,7 +173,7 @@ const OrderDetails = () => {
               <h3>Информация о заказе</h3>
               <div className="summary-item">
                 <span>Дата создания:</span>
-                <span>{formatDate(order.createdAt)}</span>
+                <span>{formatDate(order?.createdAt)}</span>
               </div>
               {order.completedAt && (
                 <div className="summary-item">
@@ -188,7 +189,7 @@ const OrderDetails = () => {
               )}
               <div className="summary-total-details">
                 <span>Итого к оплате:</span>
-                <strong>{formatPrice(order.totalAmount)} ₽</strong>
+                <strong>{formatPrice(order?.totalAmount)} ₽</strong>
               </div>
             </div>
 
