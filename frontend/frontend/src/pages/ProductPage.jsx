@@ -142,11 +142,8 @@ const ProductPage = () => {
   };
 
   const getImageList = () => {
-    if (product?.images && product.images.length > 0) {
-      return product.images;
-    }
-    if (product?.image) {
-      return [product.image];
+    if (product?.imageUrl) {
+      return [product.imageUrl];
     }
     return [];
   };

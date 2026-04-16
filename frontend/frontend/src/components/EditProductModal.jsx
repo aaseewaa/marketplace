@@ -49,7 +49,7 @@ const EditProductModal = ({ product, onClose, onSave, loading }) => {
       description: formData.description.trim(),
       price: price,
       quantity: quantity,
-      images: formData.images
+      imageUrl: formData.images?.[0] || null 
     });
 
     if (result && !result.success) {

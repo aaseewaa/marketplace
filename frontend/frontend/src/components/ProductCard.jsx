@@ -8,11 +8,12 @@ const ProductCard = ({ product }) => {
   };
 
   const getImageUrl = () => {
-    if (product.images && product.images.length > 0) {
-      return product.images[0];
-    }
-    if (product.image) {
-      return product.image;
+    if (product.imageUrl) {
+      let url = product.imageUrl;
+      if (!url.startsWith('http')) {
+        url = `http://localhost:8080${url.startsWith('/') ? url : '/' + url}`;
+      }
+      return url;
     }
     return null;
   };
