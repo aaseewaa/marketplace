@@ -4,6 +4,7 @@ using Mini_Marketplace.Models.DTO.Products;
 using Mini_Marketplace.Models.Entities;
 using Mini_Marketplace.Models.Responses;
 using Mini_Marketplace.Repositories.Interfaces;
+using System.Security.Claims;
 
 namespace Mini_Marketplace.Controllers
 {
@@ -20,7 +21,7 @@ namespace Mini_Marketplace.Controllers
             _userRepository = userRepository;
         }
 
-        private int GetCurrentUserId() => int.Parse(User.FindFirst("nameid")?.Value ?? "0");
+        private int GetCurrentUserId() => int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
 
         [HttpPost]
         [Authorize]

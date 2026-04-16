@@ -4,6 +4,7 @@ using Mini_Marketplace.Models.DTO.Addresses;
 using Mini_Marketplace.Models.Entities;
 using Mini_Marketplace.Models.Responses;
 using Mini_Marketplace.Repositories.Interfaces;
+using System.Security.Claims;
 
 namespace Mini_Marketplace.Controllers
 {
@@ -20,7 +21,7 @@ namespace Mini_Marketplace.Controllers
         }
 
         private int GetCurrentUserId() =>
-            int.Parse(User.FindFirst("nameid")?.Value ?? "0");
+            int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
 
         [HttpGet]
         public async Task<IActionResult> GetMyAddresses()
@@ -51,7 +52,7 @@ namespace Mini_Marketplace.Controllers
             if ((bool)request.IsDefault)
                 await _addressRepository.ResetDefaultAddressAsync(userId);
 
-            var address = new Models.Entities.DeliveryAddress
+            var address = new DeliveryAddress
             {
                 UserId = userId,
                 AddressLine = request.AddressLine,

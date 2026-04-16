@@ -80,7 +80,8 @@ namespace Mini_Marketplace.Controllers
                     Id = user.Id,
                     Email = user.Email,
                     Username = user.Username,
-                    FullName = user.FullName
+                    FullName = user.FullName,
+                    CreatedAt = user.CreatedAt
                 }
             };
 

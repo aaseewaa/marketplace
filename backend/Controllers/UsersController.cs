@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Mini_Marketplace.Models.DTO.Users;
 using Mini_Marketplace.Repositories.Interfaces;
 using Mini_Marketplace.Services;
+using System.Security.Claims;
 
 namespace Mini_Marketplace.Controllers
 {
@@ -28,7 +29,8 @@ namespace Mini_Marketplace.Controllers
                 Id = u.Id,
                 Email = u.Email,
                 Username = u.Username,
-                FullName = u.FullName
+                FullName = u.FullName,
+                CreatedAt = u.CreatedAt
             });
 
             return Ok(result);
@@ -38,7 +40,7 @@ namespace Mini_Marketplace.Controllers
         [Authorize]
         public async Task<IActionResult> GetCurrentUser()
         {
-            var userId = int.Parse(User.FindFirst("nameid")?.Value ?? "0");
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
             var user = await _userRepository.GetByIdAsync(userId);
 
             if (user == null)
@@ -57,9 +59,17 @@ namespace Mini_Marketplace.Controllers
         }
 
         [HttpPut("me")]
+        [Authorize]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
         {
-            var userId = int.Parse(User.FindFirst("nameid")?.Value ?? "0");
+            var claims = User.Claims.Select(c => new { c.Type, c.Value }).ToList();
+            Console.WriteLine("");
+            Console.WriteLine("=== CLAIMS IN TOKEN ===");
+            foreach (var claim in claims)
+                Console.WriteLine($"{claim.Type} = {claim.Value}");
+
+
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
             var user = await _userRepository.GetByIdAsync(userId);
 
             if (user == null)
@@ -85,14 +95,16 @@ namespace Mini_Marketplace.Controllers
                 Id = user.Id,
                 Email = user.Email,
                 Username = user.Username,
-                FullName = user.FullName
+                FullName = user.FullName,
+                CreatedAt = user.CreatedAt
             });
         }
 
         [HttpPost("me/change-password")]
+        [Authorize]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
         {
-            var userId = int.Parse(User.FindFirst("nameid")?.Value ?? "0");
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
             var user = await _userRepository.GetByIdAsync(userId);
 
             if (user == null)
@@ -121,7 +133,8 @@ namespace Mini_Marketplace.Controllers
                 Id = user.Id,
                 Email = user.Email,
                 Username = user.Username,
-                FullName = user.FullName
+                FullName = user.FullName,
+                CreatedAt = user.CreatedAt
             };
 
             return Ok(result);

@@ -4,6 +4,7 @@ using Mini_Marketplace.Models.DTO.Cart;
 using Mini_Marketplace.Models.Entities;
 using Mini_Marketplace.Models.Responses;
 using Mini_Marketplace.Repositories.Interfaces;
+using System.Security.Claims;
 
 namespace Mini_Marketplace.Controllers
 {
@@ -22,7 +23,7 @@ namespace Mini_Marketplace.Controllers
         }
 
         private int GetCurrentUserId() =>
-            int.Parse(User.FindFirst("nameid")?.Value ?? "0");
+            int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
 
         [HttpGet]
         public async Task<IActionResult> GetCart()
@@ -57,18 +58,28 @@ namespace Mini_Marketplace.Controllers
         [HttpPost("items")]
         public async Task<IActionResult> AddToCart([FromBody] CartItemRequest request)
         {
+            Console.WriteLine($"Received Quantity: {request.Quantity}");
+            Console.WriteLine($"Received ProductId: {request.ProductId}");
             var userId = GetCurrentUserId();
             var cart = await _cartRepository.GetCartWithItemsAsync(userId);
 
             if (cart == null)
+            {
+                Console.WriteLine("КОРЗИНА НЕ НАЙДЕНА????");
                 return BadRequest("Cart not found");
+            }
 
             var product = await _productRepository.GetByIdAsync(request.ProductId);
             if (product == null)
+            {
                 return BadRequest("Product not found");
+            }
 
             if (product.Quantity < request.Quantity)
+            {
+                Console.WriteLine($"НЕ ДОСТАТОЧНО ЧЕГО????: {product.Quantity} < {request.Quantity}");
                 return BadRequest("Not enough stock");
+            }
 
             var existingItem = await _cartRepository.GetCartItemAsync(cart.Id, request.ProductId);
 

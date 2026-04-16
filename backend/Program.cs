@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -80,12 +80,18 @@ builder.Services.AddCors((options) =>
     options.AddPolicy("AllowAll",
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000",
-                    "http://localhost:5173",
-                    "http://localhost:8080")
-                    .AllowCredentials()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader();
+            policy.WithOrigins(
+                "http://localhost:3000",
+                "http://localhost:5173",
+                "http://localhost:5176",
+                "http://localhost:8080",
+                "https://localhost:3000",
+                "https://localhost:5173",
+                "https://localhost:5176",
+                "https://localhost:8080")
+                .AllowCredentials()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
         });
 });
 
@@ -99,6 +105,7 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

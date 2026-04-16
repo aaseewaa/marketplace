@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using BCrypt.Net;
+using Microsoft.IdentityModel.Tokens;
 using Mini_Marketplace.Models.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -45,7 +46,15 @@ namespace Mini_Marketplace.Services
 
         public bool VerifyPassword(string password, string hash)
         {
-            return BCrypt.Net.BCrypt.Verify(password, hash);
+            try
+            {
+                return BCrypt.Net.BCrypt.Verify(password, hash);
+            }
+            catch (SaltParseException ex)
+            {
+                Console.WriteLine($"BCrypt error: {ex.Message}");
+                return false;
+            }
         }
     }
 }

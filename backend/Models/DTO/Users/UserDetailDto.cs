@@ -1,4 +1,6 @@
-﻿namespace Mini_Marketplace.Models.DTO.Users
+﻿using System.Text.Json.Serialization;
+
+namespace Mini_Marketplace.Models.DTO.Users
 {
     public class UserDetailDto
     {

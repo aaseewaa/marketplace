@@ -2,6 +2,7 @@
 using Mini_Marketplace.Repositories.Interfaces;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 
 namespace Mini_Marketplace.Services
@@ -46,7 +47,7 @@ namespace Mini_Marketplace.Services
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "nameid").Value);
+                var userId = int.Parse(jwtToken.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
 
                 context.Items["UserId"] = userId;
             }
