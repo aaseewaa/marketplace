@@ -10,10 +10,11 @@ const ProductCard = ({ product }) => {
   const getImageUrl = () => {
     if (product?.imageUrl) {
       let url = product.imageUrl;
-      if (url.startsWith('http://') || url.startsWith('https://')) {
+      if (url.startsWith('https://')) {
         return url;
       }
-      return `https://${url}`;
+
+      return `https://localhost:7202${url}`;
     }
     return null;
   };

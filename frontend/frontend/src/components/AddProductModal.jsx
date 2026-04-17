@@ -1,16 +1,27 @@
 import React, { useState } from 'react';
-import ImageUpload from './ImageUpload';
-import './Modal.css';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
+import { productsAPI } from '../services/api';
+import ImageUpload from '../components/ImageUpload';
 
-const AddProductModal = ({ onClose, onSave, loading }) => {
+const SellPage = () => {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const { success, error: showError } = useToast();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     price: '',
     quantity: '',
-    images: []
+    imageUrl: ''
   });
-  const [error, setError] = useState('');
+
+  if (!isAuthenticated) {
+    navigate('/login');
+    return null;
+  }
 
   const handleChange = (e) => {
     setFormData({
@@ -19,99 +30,103 @@ const AddProductModal = ({ onClose, onSave, loading }) => {
     });
   };
 
-  const handleImagesChange = (images) => {
-    setFormData(prev => ({ ...prev, images }));
+  // ✅ Функция для одного URL
+  const handleImageChange = (url) => {
+    console.log('Image URL changed:', url);
+    setFormData(prev => ({ ...prev, imageUrl: url }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
 
     if (!formData.name.trim()) {
-      setError('Название товара обязательно');
+      showError('Название товара обязательно');
       return;
     }
 
     const price = Number(formData.price);
     if (isNaN(price) || price <= 0) {
-      setError('Цена должна быть больше 0');
+      showError('Цена должна быть больше 0');
       return;
     }
 
     const quantity = Number(formData.quantity);
     if (isNaN(quantity) || quantity < 0) {
-      setError('Количество не может быть отрицательным');
+      showError('Количество не может быть отрицательным');
       return;
     }
 
-    const result = await onSave({
-      name: formData.name.trim(),
-      description: formData.description.trim(),
-      price: price,
-      quantity: quantity,
-      imageUrl: formData.imageUrl || null
-    });
-
-    if (result && !result.success) {
-      setError(result.error);
+    setLoading(true);
+    try {
+      await productsAPI.create({
+        name: formData.name.trim(),
+        description: formData.description.trim(),
+        price: price,
+        quantity: quantity,
+        imageUrl: formData.imageUrl || null  // ← отправляем один URL
+      });
+      success('Товар успешно добавлен');
+      navigate('/profile');
+    } catch (err) {
+      showError(err.response?.data?.message || 'Ошибка при добавлении товара');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3>Добавить товар</h3>
-          <button onClick={onClose} className="modal-close">×</button>
-        </div>
-        
-        <form onSubmit={handleSubmit} className="modal-form">
-          {error && <div className="error-message">{error}</div>}
-          
-          <div className="form-group">
-            <label>Фото товара (URL)</label>
-            <ImageUpload onImagesChange={handleImagesChange} currentImages={formData.images} />
-            <p className="hint-text">Добавьте несколько ссылок для создания галереи</p>
-          </div>
+    <div className="sell-page">
+      <div className="container">
+        <div className="sell-container">
+          <h1>Продать товар</h1>
+          <p className="sell-subtitle">Заполните информацию о товаре</p>
 
-          <div className="form-group">
-            <label>Название товара *</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              className="filter-input"
-              placeholder="Например: Ноутбук Lenovo"
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Описание</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows="4"
-              className="filter-input"
-              placeholder="Подробное описание товара..."
-            />
-          </div>
-
-          <div className="form-row">
+          <form onSubmit={handleSubmit} className="sell-form">
             <div className="form-group">
-              <label>Цена *</label>
-              <input
-                type="number"
-                name="price"
-                value={formData.price}
+              <label>Фото товара (URL)</label>
+              {/* ✅ ИСПРАВЛЕНО: value и onChange для одного URL */}
+              <ImageUpload 
+                value={formData.imageUrl}
+                onChange={handleImageChange}
+              />
+              <p className="hint">Вставьте ссылку на изображение</p>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Название товара *</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Например: Ноутбук Lenovo Legion 5"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Цена *</label>
+                <input
+                  type="number"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleChange}
+                  placeholder="0 ₽"
+                  min="1"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label>Описание</label>
+              <textarea
+                name="description"
+                value={formData.description}
                 onChange={handleChange}
-                required
-                min="1"
-                step="1"
-                className="filter-input"
-                placeholder="Например: 50000"
+                rows="6"
+                placeholder="Опишите товар подробно: состояние, характеристики, комплектация..."
               />
             </div>
 
@@ -122,27 +137,25 @@ const AddProductModal = ({ onClose, onSave, loading }) => {
                 name="quantity"
                 value={formData.quantity}
                 onChange={handleChange}
-                required
+                placeholder="Количество на складе"
                 min="0"
-                step="1"
-                className="filter-input"
-                placeholder="Например: 10"
+                required
               />
             </div>
-          </div>
 
-          <div className="modal-actions">
-            <button type="button" onClick={onClose} className="button-secondary">
-              Отмена
-            </button>
-            <button type="submit" disabled={loading} className="button-primary">
-              {loading ? 'Добавление...' : 'Добавить товар'}
-            </button>
-          </div>
-        </form>
+            <div className="sell-actions">
+              <button type="button" onClick={() => navigate(-1)} className="cancel-btn">
+                Отмена
+              </button>
+              <button type="submit" disabled={loading} className="submit-btn">
+                {loading ? 'Публикация...' : 'Опубликовать товар'}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
 };
 
-export default AddProductModal;
+export default SellPage;

@@ -16,7 +16,7 @@ const SellPage = () => {
     description: '',
     price: '',
     quantity: '',
-    images: []
+    imageUrl: ''
   });
 
   if (!isAuthenticated) {
@@ -31,8 +31,9 @@ const SellPage = () => {
     });
   };
 
-  const handleImagesChange = (images) => {
-    setFormData(prev => ({ ...prev, images }));
+  const handleImageChange = (url) => {
+    console.log('Image URL changed:', url);
+    setFormData(prev => ({ ...prev, imageUrl: url }));
   };
 
   const handleSubmit = async (e) => {
@@ -62,7 +63,7 @@ const SellPage = () => {
         description: formData.description.trim(),
         price: price,
         quantity: quantity,
-        images: formData.images
+        imageUrl: formData.imageUrl || null
       });
       success('Товар успешно добавлен');
       navigate('/profile');
@@ -82,9 +83,12 @@ const SellPage = () => {
 
           <form onSubmit={handleSubmit} className="sell-form">
             <div className="form-group">
-              <label>Фото товара</label>
-              <ImageUpload onImagesChange={handleImagesChange} currentImages={formData.images} />
-              <p className="hint">Добавьте фото для лучшего представления</p>
+              <label>Фото товара (URL)</label>
+              <ImageUpload 
+                value={formData.imageUrl}
+                onChange={handleImageChange}
+              />
+              <p className="hint">Вставьте ссылку на изображение</p>
             </div>
 
             <div className="form-row">

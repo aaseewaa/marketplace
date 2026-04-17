@@ -10,7 +10,7 @@ const HeroSection = ({ onCategoryClick }) => {
       id: 1,
       title: 'Premium Quality',
       subtitle: 'Лучшие бренды по отличным ценам',
-      image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrfT2Q9NVl0hanN3ivZA1DO2UOVv5lnMO74A&s',
       cta: 'Shop Now',
       category: 'premium',
       searchQuery: 'премиум'
@@ -19,7 +19,7 @@ const HeroSection = ({ onCategoryClick }) => {
       id: 2,
       title: 'Summer Collection',
       subtitle: 'Скидки до 50% на летнюю коллекцию',
-      image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD6p1s95F6fZ421KByTRrjgwXS_5veEpcSiA&s',
       cta: 'Explore',
       category: 'summer',
       searchQuery: 'лето'
@@ -28,7 +28,7 @@ const HeroSection = ({ onCategoryClick }) => {
       id: 3,
       title: 'Streetwear',
       subtitle: 'Эксклюзивные модели от лучших дизайнеров',
-      image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTio0dJEwoCIsrYfc48V3ywkXLcPFA5ePz0wQ&s',
       cta: 'View Collection',
       category: 'streetwear',
       searchQuery: 'уличная мода'
@@ -37,7 +37,7 @@ const HeroSection = ({ onCategoryClick }) => {
       id: 4,
       title: 'Electronics',
       subtitle: 'Новинки техники по лучшим ценам',
-      image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=800',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHeaEAudsCyvel_zGQ7NT3AcbGpRGX9fzfpQ&s',
       cta: 'Discover',
       category: 'electronics',
       searchQuery: 'электроника'

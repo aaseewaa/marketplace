@@ -143,7 +143,7 @@ const Profile = () => {
     { id: 'profile', label: 'Профиль' },
     { id: 'products', label: 'Мои товары' },
     { id: 'orders', label: 'Заказы' },
-    { id: 'returns', label: 'Возвраты' },
+    // { id: 'returns', label: 'Возвраты' },
     { id: 'addresses', label: 'Адреса' }
   ];
 
@@ -314,7 +314,7 @@ const Profile = () => {
             </div>
           )}
 
-          {activeTab === 'returns' && (
+          {/* {activeTab === 'returns' && (
             <div className="returns-section">
               <h3>Возвраты</h3>
               <div className="empty-state">
@@ -322,7 +322,7 @@ const Profile = () => {
                 <Link to="/returns" className="button-primary">Перейти к возвратам</Link>
               </div>
             </div>
-          )}
+          )} */}
 
           {activeTab === 'addresses' && (
             <div className="addresses-section">

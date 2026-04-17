@@ -137,11 +137,13 @@ const ProductPage = () => {
   const getImageUrl = () => {
     if (product?.imageUrl) {
       let url = product.imageUrl;
-      if (url.startsWith('http://') || url.startsWith('https://')) {
+      if (url.startsWith('https://')) {
+        
         return url;
       }
-      return `https://${url}`;
+      return `https://localhost:7202${url}`;
     }
+
     return null;
   };
 
@@ -174,7 +176,7 @@ const ProductPage = () => {
   }
 
   const isOwner = user && product.ownerId === user.id;
-  const imageUrl = product?.imageUrl || null;
+  const imageUrl = getImageUrl() || null;
   
   return (
     <div className="product-page">

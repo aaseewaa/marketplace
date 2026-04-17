@@ -4,6 +4,10 @@ import './ImageUpload.css';
 const ImageUpload = ({ value = '', onChange, className }) => {
   const [url, setUrl] = useState(value);
 
+  React.useEffect(() => {
+    setUrl(value);
+  }, [value]);
+
   const handleUrlChange = (e) => {
     const newUrl = e.target.value;
     setUrl(newUrl);
@@ -23,7 +27,13 @@ const ImageUpload = ({ value = '', onChange, className }) => {
       />
       {url && (
         <div className="image-preview">
-          <img src={url} alt="Preview" />
+          <img
+            src={url}
+            alt="Preview"
+            onError={(e) => {
+              e.target.style.display = 'none';
+            }}
+          />
         </div>
       )}
     </div>

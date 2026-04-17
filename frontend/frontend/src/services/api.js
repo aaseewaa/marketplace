@@ -2,7 +2,7 @@ import axios from 'axios';
 import { mockAuthAPI, mockProductsAPI } from './mockApi';
 
 const STATIC_BASE_URL = 'https://localhost:7202';
-const USE_MOCK = true;
+const USE_MOCK = false;
 
 const api = axios.create({
   baseURL: 'https://localhost:7202/api',
@@ -127,22 +127,18 @@ export const usersAPI = {
 };
 
 export const getImageUrl = (imageUrl) => {
-  // Если URL не указан, возвращаем путь к заглушке
   if (!imageUrl) {
     return '/placeholder.jpg';
   }
   
-  // Если это уже полный URL (начинается с http:// или https://)
-  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+  if (imageUrl.startsWith('https://')) {
     return imageUrl;
   }
   
-  // Если путь начинается с / (относительный путь)
   if (imageUrl.startsWith('/')) {
     return `${STATIC_BASE_URL}${imageUrl}`;
   }
-  
-  // Если путь без слеша (например, "products/shorts1.jpg")
+
   return `${STATIC_BASE_URL}/${imageUrl}`;
 };
 

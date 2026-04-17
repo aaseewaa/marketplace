@@ -3,41 +3,43 @@ import ImageUpload from './ImageUpload';
 import './Modal.css';
 
 const EditProductModal = ({ product, onClose, onSave, loading }) => {
-  const getInitialImages = () => {
-    if (product.images && product.images.length > 0) {
-      return product.images;
-    }
-    if (product.imageUrl) {
-      return [product.imageUrl];
-    }
-    return [];
-  };
-
   const [formData, setFormData] = useState({
     name: product?.name || '',
     description: product?.description || '',
     price: product?.price || '',
     quantity: product?.quantity || '',
-    images: getInitialImages()
+    imageUrl: product?.imageUrl || ''
   });
   const [error, setError] = useState('');
 
-  const [imageUrl, setImageUrl] = useState(product?.imageUrl || '');
+  console.log('EditProductModal - начальный product:', product);
+  console.log('EditProductModal - начальный imageUrl:', product?.imageUrl);
 
   const handleChange = (e) => {
+    console.log('handleChange:', e.target.name, '=', e.target.value);
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
   };
 
-  const handleImagesChange = (images) => {
-    setFormData(prev => ({ ...prev, images }));
+  const handleImageChange = (imageUrl) => {
+    console.log('handleImageChange вызван с URL:', imageUrl);
+    setFormData(prev => {
+      console.log('Предыдущий formData:', prev);
+      const newFormData = { ...prev, imageUrl };
+      console.log('Новый formData:', newFormData);
+      return newFormData;
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    console.log('=== EDIT SUBMIT ===');
+    console.log('Текущий formData:', formData);
+    console.log('imageUrl:', formData.imageUrl);
 
     if (!formData.name.trim()) {
       setError('Название товара обязательно');
@@ -56,13 +58,17 @@ const EditProductModal = ({ product, onClose, onSave, loading }) => {
       return;
     }
 
-    const result = await onSave({
+    const dataToSend = {
       name: formData.name.trim(),
       description: formData.description.trim(),
       price: price,
       quantity: quantity,
-      imageUrl: imageUrl
-    });
+      imageUrl: formData.imageUrl || null
+    };
+
+    console.log('Отправляем на бэкенд (редактирование):', dataToSend);
+
+    const result = await onSave(dataToSend);
 
     if (result && !result.success) {
       setError(result.error);
@@ -76,14 +82,17 @@ const EditProductModal = ({ product, onClose, onSave, loading }) => {
           <h3>Редактировать товар</h3>
           <button onClick={onClose} className="modal-close">×</button>
         </div>
-        
+       
         <form onSubmit={handleSubmit} className="modal-form">
           {error && <div className="error-message">{error}</div>}
-          
+         
           <div className="form-group">
             <label>Фото товара (URL)</label>
-            <ImageUpload onImagesChange={handleImagesChange} currentImages={formData.images} />
-            <p className="hint-text">Добавьте несколько ссылок для создания галереи</p>
+            <ImageUpload
+              value={formData.imageUrl}
+              onChange={handleImageChange}
+            />
+            <p className="hint-text">Введите ссылку на изображение</p>
           </div>
 
           <div className="form-group">
@@ -122,9 +131,7 @@ const EditProductModal = ({ product, onClose, onSave, loading }) => {
                 step="1"
                 className="filter-input"
               />
-            </div>
-
-            <div className="form-group">
+            </div><div className="form-group">
               <label>Количество *</label>
               <input
                 type="number"
