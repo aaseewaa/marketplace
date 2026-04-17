@@ -1,0 +1,8 @@
+.modal-content {
+  max-width: 500px;
+}
+
+.modal-form textarea {
+  resize: vertical;
+  font-family: inherit;
+}
